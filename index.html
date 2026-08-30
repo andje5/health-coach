@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f14">
+  <title>Health Coach</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#121821; --muted:#8f9baa; --text:#f7f8fa;
+      --accent:#6ee7b7; --accent2:#60a5fa; --warn:#fbbf24; --danger:#fb7185;
+      --border:#243040;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    .wrap{max-width:820px;margin:0 auto;padding:18px 16px 34px}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+    h1{font-size:28px;line-height:1.15;margin:0 0 4px}
+    .sub{color:var(--muted);font-size:14px}
+    .pill{padding:8px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px}
+    .metric .label{font-size:13px;color:var(--muted)}
+    .metric .value{font-size:28px;font-weight:750;margin:8px 0 2px}
+    .metric .small{font-size:12px;color:var(--muted)}
+    .span2{grid-column:1/-1}
+    .readiness{display:flex;align-items:center;gap:18px}
+    .ring{width:108px;height:108px;border-radius:50%;display:grid;place-items:center;
+      background:conic-gradient(var(--accent) calc(var(--p)*1%),#253140 0)}
+    .ring:before{content:"";width:82px;height:82px;border-radius:50%;background:var(--card);position:absolute}
+    .ringbox{position:relative}
+    .ringtext{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-weight:800;font-size:28px}
+    .ringtext span{display:block;font-size:11px;color:var(--muted);font-weight:500}
+    .section-title{font-size:16px;font-weight:750;margin-bottom:10px}
+    .bars{display:flex;align-items:end;gap:8px;height:130px;padding-top:8px}
+    .barwrap{flex:1;text-align:center}
+    .bar{width:100%;min-height:4px;background:linear-gradient(180deg,var(--accent2),var(--accent));border-radius:8px 8px 3px 3px}
+    .day{font-size:11px;color:var(--muted);margin-top:7px}
+    .insight{padding:12px 0;border-top:1px solid var(--border)}
+    .insight:first-of-type{border-top:0;padding-top:0}
+    .insight b{display:block;margin-bottom:4px}
+    .insight p{margin:0;color:var(--muted);font-size:14px;line-height:1.4}
+    button,.btn{appearance:none;border:0;border-radius:14px;padding:12px 14px;background:var(--accent);color:#082218;font-weight:750;cursor:pointer}
+    .btn.secondary{background:#1e2938;color:var(--text);border:1px solid var(--border)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px}
+    textarea{width:100%;min-height:145px;background:#0e141c;color:var(--text);border:1px solid var(--border);border-radius:14px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    details{margin-top:12px}
+    summary{cursor:pointer;color:var(--accent2)}
+    .foot{color:var(--muted);font-size:12px;text-align:center;margin-top:20px}
+    @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)} .span2{grid-column:span 2}.span4{grid-column:1/-1}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Health Coach</h1>
+      <div class="sub" id="dateText">Din dagliga översikt</div>
+    </div>
+    <div class="pill" id="syncText">Ingen data ännu</div>
+  </div>
+
+  <div class="grid">
+    <div class="card metric"><div class="label">Steg</div><div class="value" id="steps">0</div><div class="small">idag</div></div>
+    <div class="card metric"><div class="label">Aktiva kcal</div><div class="value" id="kcal">0</div><div class="small">idag</div></div>
+    <div class="card metric"><div class="label">Träning</div><div class="value" id="exercise">0 min</div><div class="small">idag</div></div>
+    <div class="card metric"><div class="label">Sömn</div><div class="value" id="sleep">–</div><div class="small">senaste natt</div></div>
+
+    <div class="card metric"><div class="label">Vilopuls</div><div class="value" id="rhr">–</div><div class="small">bpm</div></div>
+    <div class="card metric"><div class="label">HRV</div><div class="value" id="hrv">–</div><div class="small">ms</div></div>
+    <div class="card metric"><div class="label">VO₂ max</div><div class="value" id="vo2">–</div><div class="small">ml/kg/min</div></div>
+    <div class="card metric"><div class="label">Senaste pass</div><div class="value" id="workout">–</div><div class="small">minuter</div></div>
+
+    <div class="card span2">
+      <div class="section-title">Träningsstatus</div>
+      <div class="readiness">
+        <div class="ringbox">
+          <div class="ring" id="ring" style="--p:70"></div>
+          <div class="ringtext"><div><span id="score">70</span><span>/100</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:20px;font-weight:800" id="statusTitle">Bygger baslinje</div>
+          <div class="sub" id="statusBody">Lägg in några dagars data så blir analysen bättre.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card span2">
+      <div class="section-title">Steg – 7 dagar</div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div class="card span4">
+      <div class="section-title">Coach-insikter</div>
+      <div id="insights"></div>
+    </div>
+
+    <div class="card span4">
+      <div class="section-title">Importera från Genväg</div>
+      <div class="sub" style="margin-bottom:10px">
+        Genvägen kan öppna den här appen med ett JSON-paket i länken. Du kan även klistra in JSON manuellt här.
+      </div>
+      <textarea id="jsonInput" placeholder='{"steps":8234,"activeEnergyKcal":612,"exerciseMinutes":48,"sleepHours":7.6,"restingHeartRate":56,"hrvMs":44,"vo2Max":38.2,"latestWorkoutMinutes":52}'></textarea>
+      <div class="controls" style="margin-top:10px">
+        <button onclick="importJSON()">Importera</button>
+        <button class="btn secondary" onclick="loadDemo()">Visa demo</button>
+        <button class="btn secondary" onclick="clearData()">Rensa</button>
+      </div>
+      <details>
+        <summary>Format för Genvägen</summary>
+        <div class="sub" style="margin-top:8px;line-height:1.5">
+          Skicka ett JSON-objekt med fälten: steps, activeEnergyKcal, exerciseMinutes, sleepHours,
+          restingHeartRate, hrvMs, vo2Max, latestWorkoutMinutes och valfritt week (7 objekt med label + steps).
+        </div>
+      </details>
+    </div>
+  </div>
+  <div class="foot">Data lagras bara lokalt i webbläsaren på enheten i denna version.</div>
+</div>
+
+<script>
+const demo = {
+  steps: 8420, activeEnergyKcal: 625, exerciseMinutes: 52, sleepHours: 7.7,
+  restingHeartRate: 56, hrvMs: 47, vo2Max: 39.1, latestWorkoutMinutes: 51,
+  week: [
+    {label:"M",steps:7200},{label:"T",steps:9800},{label:"O",steps:6100},
+    {label:"T",steps:11200},{label:"F",steps:8800},{label:"L",steps:10400},{label:"S",steps:8420}
+  ]
+};
+
+function fmt(v,d=0){ return (v===null||v===undefined||Number.isNaN(Number(v))) ? "–" : Number(v).toFixed(d); }
+
+function readiness(d){
+  let s=70;
+  if(d.sleepHours>=7.5) s+=10; else if(d.sleepHours>0 && d.sleepHours<6.5) s-=15;
+  if(d.restingHeartRate>0 && d.restingHeartRate<60) s+=5;
+  if(d.hrvMs>=50) s+=8;
+  if(d.exerciseMinutes>=90) s-=5;
+  return Math.max(0,Math.min(100,Math.round(s)));
+}
+
+function makeInsights(d){
+  const out=[];
+  if(d.sleepHours && d.sleepHours<7) out.push(["Prioritera återhämtning",`Du sov ${fmt(d.sleepHours,1)} h. Kör lite lättare om kroppen känns seg.`]);
+  if(d.sleepHours>=7.5) out.push(["Bra sömnbas","Sömnen ger bra förutsättningar för normal eller hög träningsbelastning idag."]);
+  if(d.steps>=10000) out.push(["Stegmålet är klart","Du har passerat 10 000 steg idag."]);
+  if(d.hrvMs) out.push(["HRV registrerad",`Senaste HRV är ${fmt(d.hrvMs)} ms. När vi samlat fler dagar jämförs det mot din egen baslinje.`]);
+  if(!out.length) out.push(["Bygger din baslinje","Importera data från Apple Hälsa några dagar så blir insikterna bättre."]);
+  return out;
+}
+
+function render(d){
+  document.getElementById("steps").textContent=Math.round(d.steps||0).toLocaleString("sv-SE");
+  document.getElementById("kcal").textContent=Math.round(d.activeEnergyKcal||0);
+  document.getElementById("exercise").textContent=Math.round(d.exerciseMinutes||0)+" min";
+  document.getElementById("sleep").textContent=d.sleepHours?fmt(d.sleepHours,1)+" h":"–";
+  document.getElementById("rhr").textContent=d.restingHeartRate?Math.round(d.restingHeartRate):"–";
+  document.getElementById("hrv").textContent=d.hrvMs?Math.round(d.hrvMs):"–";
+  document.getElementById("vo2").textContent=d.vo2Max?fmt(d.vo2Max,1):"–";
+  document.getElementById("workout").textContent=d.latestWorkoutMinutes?Math.round(d.latestWorkoutMinutes):"–";
+
+  const s=readiness(d);
+  document.getElementById("score").textContent=s;
+  document.getElementById("ring").style.setProperty("--p",s);
+  const title=s>=80?"Redo för ett bra pass":s>=60?"Normal belastning":"Prioritera återhämtning";
+  document.getElementById("statusTitle").textContent=title;
+  document.getElementById("statusBody").textContent="Poängen är en enkel lokal modell i den här gratisversionen.";
+
+  const bars=document.getElementById("bars"); bars.innerHTML="";
+  const week=(d.week&&d.week.length)?d.week:demo.week.map(x=>({...x,steps:0}));
+  const max=Math.max(...week.map(x=>x.steps||0),1);
+  week.slice(-7).forEach(x=>{
+    const w=document.createElement("div"); w.className="barwrap";
+    const b=document.createElement("div"); b.className="bar"; b.style.height=Math.max(4,Math.round((x.steps||0)/max*110))+"px";
+    const day=document.createElement("div"); day.className="day"; day.textContent=x.label||"";
+    w.appendChild(b); w.appendChild(day); bars.appendChild(w);
+  });
+
+  const ins=document.getElementById("insights"); ins.innerHTML="";
+  makeInsights(d).forEach(([t,p])=>{
+    const el=document.createElement("div"); el.className="insight";
+    el.innerHTML=`<b>${t}</b><p>${p}</p>`; ins.appendChild(el);
+  });
+
+  const stamp=new Date().toLocaleString("sv-SE",{dateStyle:"short",timeStyle:"short"});
+  document.getElementById("syncText").textContent="Uppdaterad "+stamp;
+  localStorage.setItem("healthcoach-data",JSON.stringify(d));
+}
+
+function importJSON(){
+  try{
+    const d=JSON.parse(document.getElementById("jsonInput").value);
+    render(d);
+    alert("Data importerad.");
+  }catch(e){ alert("JSON-formatet kunde inte läsas."); }
+}
+function loadDemo(){ document.getElementById("jsonInput").value=JSON.stringify(demo,null,2); render(demo); }
+function clearData(){ localStorage.removeItem("healthcoach-data"); location.href=location.pathname; }
+
+function importFromURL(){
+  const params=new URLSearchParams(location.search);
+  const raw=params.get("data");
+  if(!raw) return false;
+  try{
+    const d=JSON.parse(raw);
+    render(d);
+    history.replaceState({},document.title,location.pathname);
+    return true;
+  }catch(e){return false}
+}
+
+document.getElementById("dateText").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
+if(!importFromURL()){
+  const saved=localStorage.getItem("healthcoach-data");
+  if(saved){ try{render(JSON.parse(saved))}catch(e){} }
+}
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("service-worker.js"); }
+</script>
+</body>
+</html>
