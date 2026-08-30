@@ -3,307 +3,149 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#091017">
+<meta name="theme-color" content="#081018">
 <title>Health Coach</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--bg:#091017;--card:#121b25;--card2:#0e1620;--line:#233243;--text:#f4f7fa;--muted:#91a0b1;--g:#70e1b1;--b:#63a7ff;--y:#f3ca52}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(#091017,#0b121b 55%,#091017);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-.wrap{max-width:980px;margin:auto;padding:18px 14px 42px}
-.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
-h1{font-size:28px;margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.sync{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:8px 10px;border-radius:999px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.span2{grid-column:1/-1}
-.card{background:rgba(18,27,37,.97);border:1px solid var(--line);border-radius:22px;padding:16px}
-.metric .label,.kicker{font-size:12px;color:var(--muted)}.metric .value{font-size:27px;font-weight:800;margin:7px 0 2px}
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.heroMain{background:linear-gradient(145deg,#152536,#101822);border-radius:18px;padding:17px}
-.weight{font-size:42px;font-weight:850;margin:5px 0}.smallgrid{display:grid;gap:9px}.smallbox{background:var(--card2);border:1px solid var(--line);border-radius:15px;padding:11px}.smallbox b{display:block;font-size:20px;margin-top:4px}
-.progress{height:9px;border-radius:99px;background:#273445;overflow:hidden;margin-top:11px}.progress div{height:100%;background:linear-gradient(90deg,var(--b),var(--g))}
-.section{font-size:16px;font-weight:800;margin-bottom:10px}.goals{display:grid;gap:9px}.goal{display:flex;justify-content:space-between;align-items:center;background:#0f1721;border:1px solid var(--line);padding:11px;border-radius:14px}
-.dot{width:11px;height:11px;border-radius:50%;background:#3a4655;display:inline-block;margin-right:9px}.dot.done{background:var(--g)}
-.badge{font-size:11px;color:var(--muted);padding:4px 7px;background:#1c2836;border-radius:99px}
-.bars{height:140px;display:flex;align-items:end;gap:7px}.bw{flex:1;text-align:center}.bar{min-height:3px;border-radius:7px 7px 2px 2px;background:linear-gradient(var(--b),var(--g))}.day{font-size:10px;color:var(--muted);margin-top:5px}
-.insight{padding:11px 0;border-top:1px solid var(--line)}.insight:first-child{border-top:0;padding-top:0}.insight b{display:block;margin-bottom:4px}.insight p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
-button,label.upload{border:0;border-radius:14px;padding:12px 14px;background:var(--g);color:#072218;font-weight:800;display:inline-block;cursor:pointer}
-button.secondary{background:#1d2937;color:var(--text);border:1px solid var(--line)}
-input[type=file]{display:none}input[type=number]{width:100%;background:#0e1620;color:var(--text);border:1px solid var(--line);padding:11px;border-radius:12px}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.status{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.45}
-.table{display:grid;gap:7px}.row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:8px 0}.row:last-child{border-bottom:0}.row span:last-child{font-weight:700}
-.tabs{position:sticky;bottom:0;margin-top:16px;background:rgba(9,16,23,.94);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:18px;padding:9px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.tab{text-align:center;color:var(--muted);font-size:11px;padding:6px}.tab.active{color:var(--g)}
-@media(min-width:760px){.grid{grid-template-columns:repeat(4,1fr)}.span4{grid-column:1/-1}.span2{grid-column:span 2}}
+:root{--bg:#081018;--card:#111b25;--card2:#0d1620;--line:#233244;--text:#f5f8fb;--muted:#91a0b2;--green:#6ee7b7;--blue:#60a5fa;--yellow:#f4d35e;--red:#fb7185}
+*{box-sizing:border-box} html{background:var(--bg)} body{margin:0;background:linear-gradient(180deg,#081018 0,#0b121b 55%,#081018 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:18px 14px 94px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}h1{font-size:27px;margin:0 0 4px}.version{font-size:11px;color:var(--muted);font-weight:650}.muted{font-size:13px;color:var(--muted);line-height:1.45}.sync{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:8px 10px;border-radius:999px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.span2{grid-column:1/-1}.card{background:rgba(17,27,37,.97);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.12)}.sectionTitle{font-size:16px;font-weight:800;margin-bottom:10px}.kicker,.metric .label{font-size:11px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}.metric .value{font-size:27px;font-weight:850;margin:7px 0 2px}.metric .subval{font-size:12px;color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.heroMain{background:linear-gradient(145deg,#142536,#101822);border-radius:18px;padding:17px}.weight{font-size:41px;font-weight:900;margin:5px 0}.progress{height:10px;border-radius:99px;background:#263446;overflow:hidden;margin-top:11px}.progress>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));width:0}.smallgrid{display:grid;gap:9px}.smallbox{background:var(--card2);border:1px solid var(--line);border-radius:15px;padding:11px}.smallbox b{display:block;font-size:20px;margin-top:4px}
+.goals{display:grid;gap:9px}.goal{display:flex;align-items:center;justify-content:space-between;background:#0e1721;border:1px solid var(--line);padding:11px;border-radius:14px}.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#3a4654;margin-right:9px}.dot.done{background:var(--green)}.badge{font-size:11px;color:var(--muted);background:#1c2937;padding:4px 8px;border-radius:99px}
+.chartCard{overflow:hidden}.chartHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.seg{display:flex;gap:5px}.seg button{padding:6px 9px;border-radius:9px;background:#182432;border:1px solid var(--line);color:var(--muted);font-size:11px}.seg button.active{background:#203246;color:var(--text);border-color:#35506c}.chartWrap{width:100%;height:180px;position:relative}.chartWrap canvas{width:100%;height:100%;display:block}.chartFoot{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:11px;margin-top:5px}
+.insight{padding:11px 0;border-top:1px solid var(--line)}.insight:first-child{border-top:0;padding-top:0}.insight b{display:block;margin-bottom:4px}.insight p{font-size:14px;color:var(--muted);margin:0;line-height:1.45}
+.table{display:grid;gap:0}.row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.row span:last-child{font-weight:750;text-align:right}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}button,label.upload{appearance:none;border:0;border-radius:14px;padding:12px 14px;background:var(--green);color:#062218;font-weight:800;cursor:pointer}button.secondary{background:#1c2937;color:var(--text);border:1px solid var(--line)}button.danger{background:#352028;color:#ffd6df;border:1px solid #5a2c39}input[type=file]{display:none}input[type=number],input[type=date]{width:100%;background:#0d1620;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px;font-size:16px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.status{font-size:12px;color:var(--muted);line-height:1.45;margin-top:10px}.ok{color:var(--green)}.warn{color:var(--yellow)}.error{color:var(--red)}
+.view{display:none}.view.active{display:block}.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:10px;width:min(calc(100% - 20px),940px);background:rgba(9,16,23,.94);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:20px;padding:7px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;z-index:10}.tab{border:0;background:transparent;color:var(--muted);font-size:11px;padding:8px 4px;border-radius:12px}.tab.active{color:var(--green);background:#11201e}.bigNumber{font-size:34px;font-weight:900}.forecast{font-size:13px;color:var(--green);margin-top:6px}.empty{padding:18px 0;color:var(--muted);font-size:13px;text-align:center}
+@media(min-width:760px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.span4{grid-column:1/-1}.span2{grid-column:span 2}.tabs{bottom:18px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div><h1>Health Coach</h1><div class="muted" id="dateTxt">Vikt, gång & återhämtning</div></div><div class="sync" id="syncTxt">Ingen import ännu</div></div>
+  <div class="top"><div><h1>Health Coach <span class="version">v5</span></h1><div class="muted" id="dateTxt">Vikt, gång & återhämtning</div></div><div class="sync" id="syncTxt">Ingen import ännu</div></div>
 
-<div class="grid">
-  <div class="card span2 hero">
-    <div class="heroMain">
-      <div class="kicker">VIKTRESA</div>
-      <div class="weight" id="weight">–</div>
-      <div class="muted">Mål 95,0 kg · kvar <span id="left">–</span></div>
-      <div class="progress"><div id="wp" style="width:0%"></div></div>
-      <div class="muted" id="wtrend" style="margin-top:8px">Registrera vikt nedan.</div>
+  <section id="overview" class="view active">
+    <div class="grid">
+      <div class="card span2 hero">
+        <div class="heroMain">
+          <div class="kicker">VIKTRESA</div><div class="weight" id="weightNow">–</div>
+          <div class="muted">Mål <span id="goalWeightLabel">95,0</span> kg · kvar <span id="weightLeft">–</span></div>
+          <div class="progress"><div id="weightProgress"></div></div><div class="muted" id="weightTrend" style="margin-top:8px">Registrera vikt under fliken Vikt.</div>
+        </div>
+        <div class="smallgrid">
+          <div class="smallbox"><span class="kicker">STEG SENASTE DAG</span><b id="stepsLatest">–</b></div>
+          <div class="smallbox"><span class="kicker">DISTANS</span><b id="distanceLatest">–</b></div>
+          <div class="smallbox"><span class="kicker">AKTIVA KCAL</span><b id="energyLatest">–</b></div>
+        </div>
+      </div>
+      <div class="card metric"><div class="label">Sömn</div><div class="value" id="sleepLatest">–</div><div class="subval">senaste natt</div></div>
+      <div class="card metric"><div class="label">Vilopuls</div><div class="value" id="rhrLatest">–</div><div class="subval">bpm</div></div>
+      <div class="card metric"><div class="label">HRV</div><div class="value" id="hrvLatest">–</div><div class="subval">ms</div></div>
+      <div class="card metric"><div class="label">VO₂ max</div><div class="value" id="vo2Latest">–</div><div class="subval">ml/kg/min</div></div>
+
+      <div class="card span2 chartCard"><div class="chartHead"><div class="sectionTitle" style="margin:0">Steg – 7 dagar</div></div><div class="chartWrap"><canvas id="steps7Chart"></canvas></div><div class="chartFoot"><span id="steps7Avg">Snitt –</span><span id="steps7Total">Totalt –</span></div></div>
+      <div class="card span2"><div class="sectionTitle">Dagens mål</div><div class="goals">
+        <div class="goal"><span><i class="dot" id="dotSteps"></i><span id="stepGoalText">12 000 steg</span></span><span class="badge" id="goalStepsBadge">–</span></div>
+        <div class="goal"><span><i class="dot" id="dotExercise"></i><span id="exerciseGoalText">60 min aktivitet</span></span><span class="badge" id="goalExerciseBadge">–</span></div>
+        <div class="goal"><span><i class="dot" id="dotSleep"></i><span id="sleepGoalText">7,5 h sömn</span></span><span class="badge" id="goalSleepBadge">–</span></div>
+        <div class="goal"><span><i class="dot" id="dotWeight"></i>Registrera vikt</span><span class="badge" id="goalWeightBadge">–</span></div>
+      </div></div>
+      <div class="card span2"><div class="sectionTitle">Coach idag</div><div id="todayInsights"></div></div>
+      <div class="card span2"><div class="sectionTitle">30 dagar</div><div class="table">
+        <div class="row"><span>Snitt steg/dag</span><span id="avgSteps30">–</span></div><div class="row"><span>Snitt distans/dag</span><span id="avgDist30">–</span></div><div class="row"><span>Snitt sömn</span><span id="avgSleep30">–</span></div><div class="row"><span>Snitt vilopuls</span><span id="avgRhr30">–</span></div><div class="row"><span>Dagar ≥ stegmål</span><span id="stepGoalDays30">–</span></div>
+      </div></div>
     </div>
-    <div class="smallgrid">
-      <div class="smallbox"><span class="kicker">STEG SENASTE DAG</span><b id="steps">–</b></div>
-      <div class="smallbox"><span class="kicker">DISTANS</span><b id="distance">–</b></div>
-      <div class="smallbox"><span class="kicker">AKTIVA KCAL</span><b id="energy">–</b></div>
+  </section>
+
+  <section id="trends" class="view">
+    <div class="grid">
+      <div class="card span4 chartCard"><div class="chartHead"><div class="sectionTitle" style="margin:0">Stegtrend</div><div class="seg"><button data-range="7" class="active">7 d</button><button data-range="30">30 d</button><button data-range="90">90 d</button></div></div><div class="chartWrap"><canvas id="stepsTrendChart"></canvas></div><div class="chartFoot"><span id="stepsTrendAvg">–</span><span id="stepsTrendGoal">–</span></div></div>
+      <div class="card span2 chartCard"><div class="sectionTitle">Sömn</div><div class="chartWrap"><canvas id="sleepChart"></canvas></div><div class="chartFoot"><span id="sleepAvg">–</span><span>Mål <span id="sleepGoalLabel">7,5</span> h</span></div></div>
+      <div class="card span2 chartCard"><div class="sectionTitle">Vilopuls</div><div class="chartWrap"><canvas id="rhrChart"></canvas></div><div class="chartFoot"><span id="rhrAvg">–</span><span>lägre trend är ofta positiv</span></div></div>
+      <div class="card span2 chartCard"><div class="sectionTitle">HRV</div><div class="chartWrap"><canvas id="hrvChart"></canvas></div><div class="chartFoot"><span id="hrvAvg">–</span><span>följ din egen baslinje</span></div></div>
+      <div class="card span2"><div class="sectionTitle">Aktivitet 30 dagar</div><div class="table"><div class="row"><span>Steg totalt</span><span id="stepsTotal30">–</span></div><div class="row"><span>Distans totalt</span><span id="distTotal30">–</span></div><div class="row"><span>Aktiva kcal/dag</span><span id="energyAvg30">–</span></div><div class="row"><span>Aktivitetsmin/dag</span><span id="exerciseAvg30">–</span></div></div></div>
     </div>
-  </div>
+  </section>
 
-  <div class="card metric"><div class="label">Sömn</div><div class="value" id="sleep">–</div><div class="muted">senaste värde</div></div>
-  <div class="card metric"><div class="label">Vilopuls</div><div class="value" id="rhr">–</div><div class="muted">bpm</div></div>
-  <div class="card metric"><div class="label">HRV</div><div class="value" id="hrv">–</div><div class="muted">ms</div></div>
-  <div class="card metric"><div class="label">VO₂ max</div><div class="value" id="vo2">–</div><div class="muted">ml/kg/min</div></div>
-
-  <div class="card span2"><div class="section">7 dagar – steg</div><div class="bars" id="bars"></div></div>
-  <div class="card span2"><div class="section">Dagens mål</div><div class="goals">
-    <div class="goal"><span><i class="dot" id="d1"></i>12 000 steg</span><span class="badge" id="g1">–</span></div>
-    <div class="goal"><span><i class="dot" id="d2"></i>60 min aktivitet</span><span class="badge" id="g2">–</span></div>
-    <div class="goal"><span><i class="dot" id="d3"></i>7,5 h sömn</span><span class="badge" id="g3">–</span></div>
-    <div class="goal"><span><i class="dot" id="d4"></i>Registrera vikt</span><span class="badge" id="g4">–</span></div>
-  </div></div>
-
-  <div class="card span2"><div class="section">Coach-insikter</div><div id="insights"></div></div>
-  <div class="card span2"><div class="section">Senaste 30 dagar</div><div class="table">
-    <div class="row"><span>Snitt steg/dag</span><span id="avgSteps">–</span></div>
-    <div class="row"><span>Snitt distans/dag</span><span id="avgDist">–</span></div>
-    <div class="row"><span>Snitt sömn</span><span id="avgSleep">–</span></div>
-    <div class="row"><span>Snitt vilopuls</span><span id="avgRhr">–</span></div>
-    <div class="row"><span>Träningspass</span><span id="workouts">–</span></div>
-  </div></div>
-
-  <div class="card span4">
-    <div class="section">Importera Apple Hälsa</div>
-    <div class="muted">Packa först upp ZIP-filen i appen Filer och välj sedan den stora JSON-filen här. All tolkning sker lokalt på din iPhone.</div>
-    <div class="actions">
-      <label class="upload" for="jsonFile">Välj Health JSON</label>
-      <input id="jsonFile" type="file" accept=".json,application/json">
-      <button class="secondary" onclick="clearHealth()">Rensa hälsodata</button>
+  <section id="weight" class="view">
+    <div class="grid">
+      <div class="card span2"><div class="sectionTitle">Registrera vikt</div><div class="formgrid"><div><div class="muted" style="margin-bottom:5px">Datum</div><input id="weightDate" type="date"></div><div><div class="muted" style="margin-bottom:5px">Vikt kg</div><input id="weightInput" type="number" inputmode="decimal" step="0.1" placeholder="118.4"></div></div><div class="actions"><button id="saveWeightBtn">Spara vikt</button></div><div class="status">Vikten lagras lokalt på den här enheten.</div></div>
+      <div class="card span2"><div class="sectionTitle">Mål & plan</div><div class="formgrid"><div><div class="muted" style="margin-bottom:5px">Målvikt</div><input id="goalWeightInput" type="number" step="0.1"></div><div><div class="muted" style="margin-bottom:5px">Stegmål/dag</div><input id="stepGoalInput" type="number" step="500"></div><div><div class="muted" style="margin-bottom:5px">Aktivitetsmål min</div><input id="exerciseGoalInput" type="number" step="5"></div><div><div class="muted" style="margin-bottom:5px">Sömnmål h</div><input id="sleepGoalInput" type="number" step="0.1"></div></div><div class="actions"><button id="saveSettingsBtn">Spara mål</button></div></div>
+      <div class="card span4 chartCard"><div class="chartHead"><div class="sectionTitle" style="margin:0">Viktutveckling</div></div><div class="chartWrap"><canvas id="weightChart"></canvas></div><div class="chartFoot"><span id="weightLossSummary">–</span><span id="weightForecast">–</span></div></div>
+      <div class="card span2"><div class="sectionTitle">Viktstatus</div><div class="table"><div class="row"><span>Senaste vikt</span><span id="weightStatNow">–</span></div><div class="row"><span>Förändring</span><span id="weightStatChange">–</span></div><div class="row"><span>Veckotakt</span><span id="weightStatRate">–</span></div><div class="row"><span>Kvar till mål</span><span id="weightStatLeft">–</span></div></div></div>
+      <div class="card span2"><div class="sectionTitle">Prognos</div><div class="bigNumber" id="forecastDateBig">–</div><div class="forecast" id="forecastText">Minst två viktregistreringar behövs för en prognos.</div></div>
     </div>
-    <div class="status" id="importStatus">v4 använder IndexedDB på iPhone, så importerad hälsodata ligger kvar även när appen stängs.</div>
-  </div>
+  </section>
 
-  <div class="card span4">
-    <div class="section">Vikt</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div><div class="muted" style="margin-bottom:5px">Startvikt</div><input id="startW" type="number" step="0.1" placeholder="120"></div>
-      <div><div class="muted" style="margin-bottom:5px">Dagens vikt</div><input id="todayW" type="number" step="0.1" placeholder="118.4"></div>
+  <section id="coach" class="view">
+    <div class="grid">
+      <div class="card span2"><div class="sectionTitle">Smarta insikter</div><div id="coachInsights"></div></div>
+      <div class="card span2"><div class="sectionTitle">Veckans fokus</div><div id="weeklyFocus"></div></div>
+      <div class="card span4"><div class="sectionTitle">Importera Apple Hälsa</div><div class="muted">Välj den uppackade JSON-filen från Health Auto Export. Ny import slås ihop med tidigare historik per datum. All bearbetning sker lokalt på din iPhone.</div><div class="actions"><label class="upload" for="jsonFile">Välj Health JSON</label><input id="jsonFile" type="file" accept=".json,application/json"><button class="secondary" id="diagnosticBtn">Visa datastatus</button><button class="danger" id="clearHealthBtn">Rensa hälsodata</button></div><div class="status" id="importStatus">Ingen fil importerad i den här sessionen.</div></div>
+      <div class="card span4"><div class="sectionTitle">Datastatus</div><div class="table" id="dataStatus"><div class="row"><span>Senaste import</span><span>–</span></div></div></div>
     </div>
-    <div class="actions"><button onclick="saveWeight()">Spara vikt</button></div>
-  </div>
+  </section>
 </div>
-
-<div class="tabs"><div class="tab active">Översikt</div><div class="tab">Vikt</div><div class="tab">Gång</div><div class="tab">Insikter</div></div>
-</div>
-
+<nav class="tabs"><button class="tab active" data-view="overview">Översikt</button><button class="tab" data-view="trends">Trender</button><button class="tab" data-view="weight">Vikt</button><button class="tab" data-view="coach">Coach</button></nav>
 <script>
-const GOAL=95;
-const wanted=["step_count","walking_running_distance","active_energy","apple_exercise_time","sleep_analysis","resting_heart_rate","heart_rate_variability","vo2_max","walking_heart_rate_average","walking_speed"];
-let current=null;
+"use strict";
+const VERSION="5.0.0";
+const DB_NAME="healthcoach-v5"; const DB_VERSION=1; const STORE="app";
+let health=null; let weights=[]; let settings={goalWeight:95,stepGoal:12000,exerciseGoal:60,sleepGoal:7.5}; let trendRange=7;
 
-const sv=n=>Math.round(n||0).toLocaleString("sv-SE");
-const one=n=>Number(n||0).toFixed(1).replace(".",",");
-function metricMap(metrics){const o={};for(const m of metrics||[])o[m.name]=m;return o}
-function q(m){return (m&&m.data)||[]}
-function latest(m){const a=q(m);return a.length?a[a.length-1]:null}
-function qty(m){
-  const x=latest(m);
-  if(!x)return 0;
-  if(typeof x.qty==="number")return x.qty;
-  if(typeof x.totalSleep==="number")return x.totalSleep;
-  return 0;
-}
-function avg(m,days=30){
-  const a=q(m).slice(-days).map(x=>typeof x.qty==="number"?x.qty:x.totalSleep).filter(Number.isFinite);
-  return a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
-}
-function kcalFromKJ(kj){return kj/4.184}
-function set(id,v){document.getElementById(id).textContent=v}
-function goal(id,b){document.getElementById(id).className="dot"+(b?" done":"")}
-function parseDate(s){return new Date((s||"").replace(" +0200","+02:00").replace(" +0100","+01:00").replace(" ","T"))}
+const $=id=>document.getElementById(id); const n=v=>Number(v)||0; const sv=v=>Math.round(n(v)).toLocaleString("sv-SE"); const one=v=>n(v).toFixed(1).replace(".",",");
+function parseDate(s){if(!s)return new Date(NaN);return new Date(s.replace(" +0200","+02:00").replace(" +0100","+01:00").replace(" ","T"))}
+function isoDay(d){const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`}
+function todayISO(){return isoDay(new Date())}
+function metricMap(){const out={};for(const m of health?.metrics||[])out[m.name]=m;return out}
+function arr(name){return metricMap()[name]?.data||[]}
+function latest(name){const a=arr(name);return a.length?a[a.length-1]:null}
+function val(x,name){if(!x)return 0;if(name==="sleep_analysis")return n(x.totalSleep);return n(x.qty)}
+function latestVal(name){return val(latest(name),name)}
+function lastN(name,days){return arr(name).slice(-days)}
+function avg(name,days){const a=lastN(name,days).map(x=>val(x,name)).filter(Number.isFinite);return a.length?a.reduce((s,x)=>s+x,0)/a.length:0}
+function sum(name,days){return lastN(name,days).reduce((s,x)=>s+val(x,name),0)}
+function kcal(kj){return n(kj)/4.184}
+function pct(v,max){return max?Math.max(0,Math.min(100,Math.round(n(v)/max*100))):0}
+function set(id,text){const e=$(id);if(e)e.textContent=text}
+function dot(id,on){const e=$(id);if(e)e.className="dot"+(on?" done":"")}
 
-async function importJSONFile(file){
-  const st=document.getElementById("importStatus");
-  try{
-    st.textContent="Läser JSON…";
-    if(!file.name.toLowerCase().endsWith(".json")){
-      throw new Error("Välj den uppackade .json-filen, inte ZIP-filen.");
-    }
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function dbGet(key){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readonly"),r=tx.objectStore(STORE).get(key);r.onsuccess=()=>resolve(r.result??null);r.onerror=()=>reject(r.error)})}
+async function dbPut(key,value){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(value,key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+async function dbDelete(key){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
 
-    const text=await file.text();
-    st.textContent="Tolkar Apple Hälsa-data…";
-    const raw=JSON.parse(text);
+function compactMetric(m){return {name:m.name,units:m.units||"",data:(m.data||[]).map(x=>m.name==="sleep_analysis"?{date:x.date,totalSleep:n(x.totalSleep),deep:n(x.deep),rem:n(x.rem),core:n(x.core),awake:n(x.awake)}:{date:x.date,qty:n(x.qty)})}}
+function mergeMetrics(oldMetrics,newMetrics){const byName={};for(const m of oldMetrics||[])byName[m.name]=m;for(const nm of newMetrics){const om=byName[nm.name]||{name:nm.name,units:nm.units,data:[]};const byDate={};for(const x of om.data||[])byDate[isoDay(parseDate(x.date))]=x;for(const x of nm.data||[])byDate[isoDay(parseDate(x.date))]=x;om.data=Object.values(byDate).sort((a,b)=>parseDate(a.date)-parseDate(b.date));om.units=nm.units||om.units;byName[nm.name]=om}return Object.values(byName)}
+async function importHealthJSON(file){const st=$("importStatus");try{st.className="status";st.textContent="Läser JSON-filen…";if(!file.name.toLowerCase().endsWith(".json"))throw new Error("Välj .json-filen, inte ZIP-filen.");const raw=JSON.parse(await file.text());if(!raw.data||!Array.isArray(raw.data.metrics))throw new Error("Exportformatet känns inte igen.");const keep=new Set(["step_count","walking_running_distance","active_energy","apple_exercise_time","sleep_analysis","resting_heart_rate","heart_rate_variability","vo2_max","body_mass"]);const selected=raw.data.metrics.filter(m=>keep.has(m.name)).map(compactMetric);if(!selected.length)throw new Error("Inga relevanta hälsomått hittades.");health={metrics:mergeMetrics(health?.metrics||[],selected),workoutsCount:Math.max(n(health?.workoutsCount),n(raw.data.workouts?.length)),importedAt:new Date().toISOString()};await dbPut("health",health);st.className="status ok";st.textContent=`Klart: ${selected.length} mätserier importerade och historiken sparades lokalt.`;renderAll()}catch(e){console.error(e);st.className="status error";st.textContent="Importen misslyckades: "+e.message}}
 
-    if(!raw.data || !Array.isArray(raw.data.metrics)){
-      throw new Error("Exportformatet känns inte igen.");
-    }
+function getLatestWeight(){return weights.length?weights[weights.length-1]:null}
+function weightStats(){if(!weights.length)return {now:0,start:0,change:0,rate:0,left:0,forecast:null};const a=[...weights].sort((x,y)=>new Date(x.date)-new Date(y.date));const first=a[0],last=a[a.length-1];const days=Math.max(1,(new Date(last.date)-new Date(first.date))/86400000);const change=last.kg-first.kg;const rate=change/(days/7);let forecast=null;if(rate<-.05&&last.kg>settings.goalWeight){const weeks=(last.kg-settings.goalWeight)/(-rate);forecast=new Date(new Date(last.date).getTime()+weeks*7*86400000)}return {now:last.kg,start:first.kg,change,rate,left:Math.max(0,last.kg-settings.goalWeight),forecast}}
 
-    const keep=new Set([
-      "step_count","walking_running_distance","active_energy",
-      "apple_exercise_time","sleep_analysis","resting_heart_rate",
-      "heart_rate_variability","vo2_max","body_mass"
-    ]);
+function drawLine(canvas,rows,valueFn,goal=null){if(!canvas)return;const rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.max(300,Math.round(rect.width*dpr));canvas.height=Math.max(160,Math.round(rect.height*dpr));const c=canvas.getContext("2d");c.scale(dpr,dpr);const W=rect.width,H=rect.height,p=18;c.clearRect(0,0,W,H);if(!rows.length){c.fillStyle="#91a0b2";c.font="13px -apple-system";c.fillText("Ingen data",p,H/2);return}const vals=rows.map(valueFn).filter(Number.isFinite);let min=Math.min(...vals),max=Math.max(...vals);if(goal!=null){min=Math.min(min,goal);max=Math.max(max,goal)}if(max===min){max+=1;min-=1}const pad=(max-min)*.12;min-=pad;max+=pad;const X=i=>p+(W-2*p)*(rows.length===1?0.5:i/(rows.length-1));const Y=v=>H-p-(H-2*p)*(v-min)/(max-min);c.strokeStyle="#263648";c.lineWidth=1;c.beginPath();c.moveTo(p,H-p);c.lineTo(W-p,H-p);c.stroke();if(goal!=null){c.strokeStyle="#f4d35e";c.setLineDash([5,5]);c.beginPath();c.moveTo(p,Y(goal));c.lineTo(W-p,Y(goal));c.stroke();c.setLineDash([])}c.strokeStyle="#6ee7b7";c.lineWidth=2.5;c.beginPath();rows.forEach((r,i)=>{const x=X(i),y=Y(valueFn(r));i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke();c.fillStyle="#60a5fa";rows.forEach((r,i)=>{c.beginPath();c.arc(X(i),Y(valueFn(r)),2.4,0,Math.PI*2);c.fill()})}
 
-    const selected=(raw.data.metrics||[])
-      .filter(m=>keep.has(m.name))
-      .map(m=>({
-        name:m.name,
-        units:m.units||"",
-        data:(m.data||[]).map(x=>{
-          if(m.name==="sleep_analysis"){
-            return {
-              date:x.date,
-              totalSleep:Number(x.totalSleep||0),
-              deep:Number(x.deep||0),
-              rem:Number(x.rem||0),
-              core:Number(x.core||0),
-              awake:Number(x.awake||0)
-            };
-          }
-          return {date:x.date, qty:Number(x.qty||0)};
-        })
-      }));
+function insights(){if(!health)return [["Importera hälsodata","Välj din senaste Health Auto Export JSON under Coach för att få personliga insikter."]];const out=[];const steps=latestVal("step_count"),s30=avg("step_count",30),sl30=avg("sleep_analysis",30),r7=avg("resting_heart_rate",7),r30=avg("resting_heart_rate",30),h7=avg("heart_rate_variability",7),h30=avg("heart_rate_variability",30);if(steps>=settings.stepGoal)out.push(["Dagens stegmål är klart",`Du har nått ${sv(steps)} steg. Extra gång idag är bonus.`]);else out.push(["Dagens gång",`Cirka ${sv(Math.max(0,settings.stepGoal-steps))} steg återstår till dagens mål.`]);if(s30)out.push(["Din basnivå",`Du ligger på ungefär ${sv(s30)} steg per dag de senaste 30 dagarna.`]);if(sl30&&sl30<settings.sleepGoal-.4)out.push(["Sömn är en möjlig hävstång",`30-dagarssnittet är ${one(sl30)} h, under ditt mål på ${one(settings.sleepGoal)} h.`]);if(r7&&r30&&r7<r30-2)out.push(["Vilopulsen går åt rätt håll",`7-dagarssnittet är ${one(r7)} bpm jämfört med ${one(r30)} bpm över 30 dagar.`]);if(h7&&h30&&h7<h30*.8)out.push(["HRV ligger under din baslinje",`7-dagarssnittet ligger tydligt under 30-dagarssnittet. Prioritera sömn och lugn gång snarare än att pressa intensiteten.`]);const ws=weightStats();if(weights.length>=2&&ws.rate<0)out.push(["Vikttrenden är nedåt",`Nuvarande trend är ungefär ${one(Math.abs(ws.rate))} kg per vecka. Följ trenden över flera veckor, inte enskilda dagar.`]);if(weights.length>=2&&ws.rate>=-.05)out.push(["Vikten är relativt stilla",`Öka inte allt på en gång. Håll stegmålet konsekvent och följ 2–3 veckors trend innan du ändrar planen.`]);return out.slice(0,6)}
+function renderInsights(containerId,list){const box=$(containerId);box.innerHTML="";for(const [t,p] of list){const el=document.createElement("div");el.className="insight";el.innerHTML=`<b>${t}</b><p>${p}</p>`;box.appendChild(el)}}
 
-    current={
-      metrics:selected,
-      workoutsCount:(raw.data.workouts||[]).length,
-      importedAt:new Date().toISOString()
-    };
+function renderOverview(){const m=metricMap();const steps=latestVal("step_count"),dist=latestVal("walking_running_distance"),energy=kcal(latestVal("active_energy")),exercise=latestVal("apple_exercise_time"),sleep=latestVal("sleep_analysis"),rhr=latestVal("resting_heart_rate"),hrv=latestVal("heart_rate_variability"),vo2=latestVal("vo2_max");set("stepsLatest",steps?sv(steps):"–");set("distanceLatest",dist?one(dist)+" km":"–");set("energyLatest",energy?sv(energy)+" kcal":"–");set("sleepLatest",sleep?one(sleep)+" h":"–");set("rhrLatest",rhr?sv(rhr):"–");set("hrvLatest",hrv?sv(hrv):"–");set("vo2Latest",vo2?one(vo2):"–");set("stepGoalText",sv(settings.stepGoal)+" steg");set("exerciseGoalText",sv(settings.exerciseGoal)+" min aktivitet");set("sleepGoalText",one(settings.sleepGoal)+" h sömn");set("goalStepsBadge",steps?pct(steps,settings.stepGoal)+"%":"–");set("goalExerciseBadge",exercise?sv(exercise)+" min":"–");set("goalSleepBadge",sleep?one(sleep)+" h":"–");dot("dotSteps",steps>=settings.stepGoal);dot("dotExercise",exercise>=settings.exerciseGoal);dot("dotSleep",sleep>=settings.sleepGoal);const w=getLatestWeight();set("goalWeightBadge",w?one(w.kg)+" kg":"–");dot("dotWeight",!!w);const seven=lastN("step_count",7);drawLine($("steps7Chart"),seven,x=>val(x,"step_count"),settings.stepGoal);set("steps7Avg",seven.length?"Snitt "+sv(seven.reduce((s,x)=>s+val(x,"step_count"),0)/seven.length):"Snitt –");set("steps7Total",seven.length?"Totalt "+sv(seven.reduce((s,x)=>s+val(x,"step_count"),0)):"Totalt –");set("avgSteps30",avg("step_count",30)?sv(avg("step_count",30)):"–");set("avgDist30",avg("walking_running_distance",30)?one(avg("walking_running_distance",30))+" km":"–");set("avgSleep30",avg("sleep_analysis",30)?one(avg("sleep_analysis",30))+" h":"–");set("avgRhr30",avg("resting_heart_rate",30)?one(avg("resting_heart_rate",30))+" bpm":"–");set("stepGoalDays30",arr("step_count").slice(-30).length?`${arr("step_count").slice(-30).filter(x=>val(x,"step_count")>=settings.stepGoal).length} av ${arr("step_count").slice(-30).length}`:"–");renderInsights("todayInsights",insights().slice(0,3));renderWeightHero()}
+function renderTrends(){const steps=lastN("step_count",trendRange);drawLine($("stepsTrendChart"),steps,x=>val(x,"step_count"),settings.stepGoal);set("stepsTrendAvg",steps.length?"Snitt "+sv(steps.reduce((s,x)=>s+val(x,"step_count"),0)/steps.length)+" steg":"–");set("stepsTrendGoal","Mål "+sv(settings.stepGoal));const sl=lastN("sleep_analysis",30),rh=lastN("resting_heart_rate",30),hv=lastN("heart_rate_variability",30);drawLine($("sleepChart"),sl,x=>val(x,"sleep_analysis"),settings.sleepGoal);drawLine($("rhrChart"),rh,x=>val(x,"resting_heart_rate"));drawLine($("hrvChart"),hv,x=>val(x,"heart_rate_variability"));set("sleepAvg",sl.length?"Snitt "+one(avg("sleep_analysis",30))+" h":"–");set("rhrAvg",rh.length?"Snitt "+one(avg("resting_heart_rate",30))+" bpm":"–");set("hrvAvg",hv.length?"Snitt "+one(avg("heart_rate_variability",30))+" ms":"–");set("sleepGoalLabel",one(settings.sleepGoal));set("stepsTotal30",sum("step_count",30)?sv(sum("step_count",30)):"–");set("distTotal30",sum("walking_running_distance",30)?one(sum("walking_running_distance",30))+" km":"–");set("energyAvg30",avg("active_energy",30)?sv(kcal(avg("active_energy",30)))+" kcal":"–");set("exerciseAvg30",avg("apple_exercise_time",30)?one(avg("apple_exercise_time",30))+" min":"–")}
+function renderWeightHero(){const ws=weightStats(),w=getLatestWeight();set("goalWeightLabel",one(settings.goalWeight));set("weightNow",w?one(w.kg)+" kg":"–");set("weightLeft",w?one(ws.left)+" kg":"–");if(weights.length>=2){set("weightTrend",(ws.change<=0?"↓ ":"↑ ")+one(Math.abs(ws.change))+" kg sedan första registreringen")}else set("weightTrend","Registrera minst två vikter för trend.");let prog=0;if(ws.start>settings.goalWeight&&ws.now)prog=Math.max(0,Math.min(100,(ws.start-ws.now)/(ws.start-settings.goalWeight)*100));$("weightProgress").style.width=prog+"%"}
+function renderWeight(){const ws=weightStats();drawLine($("weightChart"),weights,x=>x.kg,settings.goalWeight);set("weightLossSummary",weights.length>=2?`${ws.change<=0?"−":"+"}${one(Math.abs(ws.change))} kg sedan start`:"Minst två registreringar behövs");set("weightForecast",ws.forecast?"Prognos "+ws.forecast.toLocaleDateString("sv-SE",{day:"numeric",month:"short",year:"numeric"}):"Ingen prognos ännu");set("weightStatNow",ws.now?one(ws.now)+" kg":"–");set("weightStatChange",weights.length>=2?(ws.change<=0?"−":"+")+one(Math.abs(ws.change))+" kg":"–");set("weightStatRate",weights.length>=2?one(ws.rate)+" kg/vecka":"–");set("weightStatLeft",ws.now?one(ws.left)+" kg":"–");if(ws.forecast){set("forecastDateBig",ws.forecast.toLocaleDateString("sv-SE",{day:"numeric",month:"short",year:"numeric"}));set("forecastText","En enkel linjär prognos från din registrerade vikttrend. Den kommer ändras när fler vägningar läggs till.")}else{set("forecastDateBig","–");set("forecastText","Minst två viktregistreringar med nedåtgående trend behövs för en prognos.")}renderWeightHero()}
+function renderCoach(){renderInsights("coachInsights",insights());let focus=[];const s30=avg("step_count",30),sl=avg("sleep_analysis",30);if(!health)focus=[["1. Importera hälsodata","Börja med den senaste JSON-exporten."]];else{if(s30<settings.stepGoal)focus.push(["1. Konsekvent gång",`Försök närma dig ${sv(settings.stepGoal)} steg i snitt snarare än att jaga enstaka toppdagar.`]);else focus.push(["1. Behåll stegnivån",`Ditt 30-dagarssnitt ligger redan kring eller över ditt mål.`]);if(sl&&sl<settings.sleepGoal)focus.push(["2. Sömn",`Försök flytta snittet mot ${one(settings.sleepGoal)} timmar.`]);else focus.push(["2. Återhämtning","Behåll en jämn sömnrytm och följ vilopuls/HRV som trend."]);focus.push(["3. Väg dig regelbundet","2–4 vägningar per vecka ger en mycket bättre vikttrend än enstaka mätningar."])}renderInsights("weeklyFocus",focus);renderDataStatus()}
+function renderDataStatus(){const box=$("dataStatus");const rows=[];rows.push(["Version",VERSION]);rows.push(["Senaste import",health?.importedAt?new Date(health.importedAt).toLocaleString("sv-SE"):"–"]);for(const name of ["step_count","walking_running_distance","active_energy","apple_exercise_time","sleep_analysis","resting_heart_rate","heart_rate_variability","vo2_max"]){const a=arr(name);rows.push([name,a.length?`${a.length} dagar · senast ${isoDay(parseDate(a[a.length-1].date))}`:"saknas"])}rows.push(["Viktregistreringar",String(weights.length)]);box.innerHTML=rows.map(([a,b])=>`<div class="row"><span>${a}</span><span>${b}</span></div>`).join("")}
+function renderAll(){set("syncTxt",health?.importedAt?"Import "+new Date(health.importedAt).toLocaleDateString("sv-SE"):"Ingen import ännu");renderOverview();renderTrends();renderWeight();renderCoach();$("goalWeightInput").value=settings.goalWeight;$("stepGoalInput").value=settings.stepGoal;$("exerciseGoalInput").value=settings.exerciseGoal;$("sleepGoalInput").value=settings.sleepGoal}
 
-    await saveHealthDB(current);
-    render();
+async function saveWeight(){const date=$("weightDate").value||todayISO(),kg=parseFloat($("weightInput").value);if(!Number.isFinite(kg)||kg<40||kg>300){alert("Ange en rimlig vikt i kg.");return}const byDate={};for(const w of weights)byDate[w.date]=w;byDate[date]={date,kg};weights=Object.values(byDate).sort((a,b)=>new Date(a.date)-new Date(b.date));await dbPut("weights",weights);$("weightInput").value="";renderAll()}
+async function saveSettings(){const g=parseFloat($("goalWeightInput").value),s=parseFloat($("stepGoalInput").value),e=parseFloat($("exerciseGoalInput").value),sl=parseFloat($("sleepGoalInput").value);if(Number.isFinite(g))settings.goalWeight=g;if(Number.isFinite(s))settings.stepGoal=s;if(Number.isFinite(e))settings.exerciseGoal=e;if(Number.isFinite(sl))settings.sleepGoal=sl;await dbPut("settings",settings);renderAll()}
+async function clearHealth(){if(!confirm("Rensa all importerad hälsodata? Vikt och mål behålls."))return;await dbDelete("health");health=null;$("importStatus").className="status";$("importStatus").textContent="Importerad hälsodata rensad.";renderAll()}
+function switchView(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===id));requestAnimationFrame(()=>renderAll())}
 
-    st.textContent=`Klart: ${selected.length} relevanta hälsomått och ${(raw.data.workouts||[]).length} träningspass importerade och sparade lokalt.`;
-  }catch(e){
-    console.error(e);
-    st.textContent="Importen misslyckades: "+e.message;
-  }
-}
+$("jsonFile").addEventListener("change",e=>{const f=e.target.files?.[0];if(f)importHealthJSON(f);e.target.value=""});$("saveWeightBtn").addEventListener("click",saveWeight);$("saveSettingsBtn").addEventListener("click",saveSettings);$("clearHealthBtn").addEventListener("click",clearHealth);$("diagnosticBtn").addEventListener("click",()=>{switchView("coach");renderDataStatus()});document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>switchView(t.dataset.view)));document.querySelectorAll("[data-range]").forEach(b=>b.addEventListener("click",()=>{trendRange=n(b.dataset.range);document.querySelectorAll("[data-range]").forEach(x=>x.classList.toggle("active",x===b));renderTrends()}));window.addEventListener("resize",()=>{renderOverview();renderTrends();renderWeight()});
 
-
-const DB_NAME="healthcoach-db";
-const STORE_NAME="health";
-const DB_VERSION=1;
-
-function openDB(){
-  return new Promise((resolve,reject)=>{
-    const req=indexedDB.open(DB_NAME,DB_VERSION);
-    req.onupgradeneeded=()=>{
-      const db=req.result;
-      if(!db.objectStoreNames.contains(STORE_NAME)){
-        db.createObjectStore(STORE_NAME);
-      }
-    };
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>reject(req.error);
-  });
-}
-
-async function saveHealthDB(data){
-  const db=await openDB();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(STORE_NAME,"readwrite");
-    tx.objectStore(STORE_NAME).put(data,"latest");
-    tx.oncomplete=()=>resolve();
-    tx.onerror=()=>reject(tx.error);
-  });
-}
-
-async function loadHealthDB(){
-  const db=await openDB();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(STORE_NAME,"readonly");
-    const req=tx.objectStore(STORE_NAME).get("latest");
-    req.onsuccess=()=>resolve(req.result||null);
-    req.onerror=()=>reject(req.error);
-  });
-}
-
-async function clearHealthDB(){
-  const db=await openDB();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(STORE_NAME,"readwrite");
-    tx.objectStore(STORE_NAME).delete("latest");
-    tx.oncomplete=()=>resolve();
-    tx.onerror=()=>reject(tx.error);
-  });
-}
-
-function render(){
-  if(!current)return;
-  const m=metricMap(current.metrics);
-
-  const steps=qty(m.step_count), dist=qty(m.walking_running_distance), ex=qty(m.apple_exercise_time);
-  const sleep=qty(m.sleep_analysis), rhr=qty(m.resting_heart_rate), hrv=qty(m.heart_rate_variability), vo2=qty(m.vo2_max);
-  const energy=kcalFromKJ(qty(m.active_energy));
-
-  set("steps",sv(steps));
-  set("distance",dist?one(dist)+" km":"–");
-  set("energy",energy?sv(energy)+" kcal":"–");
-  set("sleep",sleep?one(sleep)+" h":"–");
-  set("rhr",rhr?sv(rhr):"–");
-  set("hrv",hrv?sv(hrv):"–");
-  set("vo2",vo2?one(vo2):"–");
-
-  const ps=Math.min(100,Math.round(steps/12000*100)); set("g1",ps+"%");goal("d1",steps>=12000);
-  const pe=Math.min(100,Math.round(ex/60*100));set("g2",ex?sv(ex)+" min":"–");goal("d2",ex>=60);
-  set("g3",sleep?one(sleep)+" h":"–");goal("d3",sleep>=7.5);
-
-  const seven=q(m.step_count).slice(-7), max=Math.max(1,...seven.map(x=>x.qty||0));
-  const bars=document.getElementById("bars");bars.innerHTML="";
-  seven.forEach(x=>{const w=document.createElement("div");w.className="bw";const b=document.createElement("div");b.className="bar";b.style.height=Math.max(4,Math.round((x.qty||0)/max*112))+"px";const d=document.createElement("div");d.className="day";d.textContent=parseDate(x.date).toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");w.append(b,d);bars.append(w)});
-
-  set("avgSteps",sv(avg(m.step_count)));
-  set("avgDist",avg(m.walking_running_distance)?one(avg(m.walking_running_distance))+" km":"–");
-  set("avgSleep",avg(m.sleep_analysis)?one(avg(m.sleep_analysis))+" h":"–");
-  set("avgRhr",avg(m.resting_heart_rate)?sv(avg(m.resting_heart_rate))+" bpm":"–");
-  set("workouts",sv(current.workoutsCount||0));
-
-  let ins=[];
-  const aSteps=avg(m.step_count), aSleep=avg(m.sleep_analysis), aRhr=avg(m.resting_heart_rate);
-  if(steps>=12000)ins.push(["Dagens steg är klara","Du har nått 12 000 steg. Mer gång idag är bonus, inte ett krav."]);
-  else if(steps>0)ins.push(["Dagens gång",`Du har ungefär ${sv(Math.max(0,12000-steps))} steg kvar till 12 000.`]);
-  if(aSteps)ins.push(["30-dagarstakt",`Du ligger på cirka ${sv(aSteps)} steg per dag i snitt.`]);
-  if(aSleep && aSleep<7)ins.push(["Sömnen är en förbättringspunkt",`30-dagarssnittet är ${one(aSleep)} timmar. För viktresan vill vi undvika att för lite sömn driver hunger och trötthet.`]);
-  else if(aSleep)ins.push(["Stabil sömn",`30-dagarssnittet är ${one(aSleep)} timmar.`]);
-  if(aRhr)ins.push(["Vilopulsbaslinje",`Din 30-dagars vilopuls ligger runt ${sv(aRhr)} bpm. Vi följer riktningen över tid snarare än enskilda dagar.`]);
-  const box=document.getElementById("insights");box.innerHTML="";
-  ins.slice(0,4).forEach(([t,p])=>{const el=document.createElement("div");el.className="insight";el.innerHTML=`<b>${t}</b><p>${p}</p>`;box.appendChild(el)});
-  document.getElementById("syncTxt").textContent="Import "+new Date(current.importedAt).toLocaleDateString("sv-SE");
-  renderWeight();
-}
-function loadWeight(){try{return JSON.parse(localStorage.getItem("hc-weight"))||{}}catch{return {}}}
-function saveWeight(){const s=parseFloat(document.getElementById("startW").value),t=parseFloat(document.getElementById("todayW").value);const old=loadWeight();localStorage.setItem("hc-weight",JSON.stringify({start:Number.isFinite(s)?s:old.start,today:Number.isFinite(t)?t:old.today}));renderWeight()}
-function renderWeight(){const w=loadWeight();document.getElementById("startW").value=w.start||"";document.getElementById("todayW").value=w.today||"";set("weight",w.today?one(w.today)+" kg":"–");set("left",w.today?one(Math.max(0,w.today-GOAL))+" kg":"–");set("g4",w.today?one(w.today)+" kg":"–");goal("d4",!!w.today);if(w.start&&w.today&&w.start>GOAL){const p=Math.max(0,Math.min(100,(w.start-w.today)/(w.start-GOAL)*100));document.getElementById("wp").style.width=p+"%";const lost=w.start-w.today;set("wtrend",(lost>=0?"↓ ":"↑ ")+one(Math.abs(lost))+" kg sedan start")}else{document.getElementById("wp").style.width="0%";set("wtrend","Registrera startvikt och dagens vikt.")}}
-async function clearHealth(){
-  try{
-    await clearHealthDB();
-    localStorage.removeItem("hc-health");
-    localStorage.removeItem("healthcoach-data");
-  }catch(e){}
-  current=null;
-  document.getElementById("importStatus").textContent="Sparad hälsodata rensad.";
-  document.getElementById("syncTxt").textContent="Ingen import ännu";
-}catch(e){}
-  current=null;
-  document.getElementById("importStatus").textContent="Gamla lagrade hälsodata rensade.";
-}
-document.getElementById("jsonFile").addEventListener("change",e=>{if(e.target.files[0])importJSONFile(e.target.files[0])});
-document.getElementById("dateTxt").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-renderWeight();
-(async()=>{
-  try{
-    current=await loadHealthDB();
-    if(current)render();
-  }catch(e){
-    console.warn("Kunde inte läsa IndexedDB",e);
-  }
-})();
-if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");
+(async()=>{try{health=await dbGet("health");weights=await dbGet("weights")||[];settings=Object.assign(settings,await dbGet("settings")||{});$("weightDate").value=todayISO();$("dateTxt").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});renderAll()}catch(e){console.error(e);$("importStatus").className="status error";$("importStatus").textContent="Kunde inte starta lokal databas: "+e.message}})();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js").catch(console.warn);
 </script>
 </body>
 </html>
