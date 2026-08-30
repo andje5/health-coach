@@ -1,40 +1,21 @@
-# Health Coach v5
+# Health Coach Stable v21
 
-Detta är den första samlade versionen som är genomgången mot din riktiga Health Auto Export.
+Denna version är QA-fokuserad och bygger på Expert v20.
 
-## Det som ingår
-- Stabil JSON-import utan externa JavaScript-bibliotek
-- IndexedDB för permanent lokal lagring på iPhone
-- Nya importer slås ihop med tidigare historik per datum
-- Översikt med steg, distans, aktiva kcal, sömn, vilopuls, HRV och VO2 max
-- 7-dagars stegdiagram
-- Trender för 7/30/90 dagar
-- 30-dagars sammanställning
-- Viktlogg med historik
-- Målvikt och justerbara mål
-- Enkel prognos mot målvikt när minst två vägningar finns
-- Coach-insikter baserade på gång, sömn, puls, HRV och vikttrend
-- Datastatus/diagnostik
-- Ingen extern AI eller server; hälsodata stannar lokalt på enheten
+Förbättringar:
+- Fixad svensk lokal datumhantering. Health Auto Export-dagar flyttas inte längre en dag bakåt av UTC-konvertering.
+- IndexedDB självtest vid start.
+- Backup/export och återställning av appdata. Matbilder utelämnas ur backupen för att hålla den liten.
+- Lagringskontroll och fallback: måltid kan sparas utan foto om bildlagring slår i kvot.
+- Säkrare visning av användartext i måltider.
+- Robustare cacheuppdatering/service worker.
+- Samma Health Auto Export-import och sammanslagning av överlappande datum.
 
-## Verifierat mot din export
-Filen HealthAutoExport_20260830153351.zip innehåller 31 dagars steg, aktiv energi, aktivitetstid, distans, vilopuls och HRV; 28 sömndagar; 1 VO2 max-värde och 26 träningspass. v5-parsern är byggd för just denna struktur.
+Rekommenderad synk:
+- 1 gång per dag på kvällen för aktuella dagsråd.
+- 2–3 gånger per vecka räcker för trenduppföljning.
+- Radera ZIP och uppackad JSON från Filer efter att importen är bekräftad.
 
-## Uppdatera GitHub
-1. Packa upp HealthCoachPWA_v5.zip på PC.
-2. Ersätt index.html, manifest.json, service-worker.js, icon-192.png och icon-512.png i ditt repository.
-3. Commit changes.
-4. Vänta 1–3 minuter.
-5. Öppna https://andje5.github.io/health-coach/ i Safari på iPhone.
-6. Uppdatera tills rubriken visar v5.
-7. Stäng hemskärmsappen helt och öppna den igen.
-8. Gå till Coach > Välj Health JSON och importera den uppackade JSON-filen.
-9. Stäng appen helt och öppna den igen. Datan ska ligga kvar via IndexedDB.
-
-## Fortsatta importer
-Importera bara en ny Health Auto Export JSON när du vill uppdatera. v5 slår ihop nya datum med den redan sparade historiken.
-
-## Begränsningar
-- Health Auto Export-exporten är fortfarande manuell i gratisupplägget.
-- Prognosen för målvikt är en enkel linjär trend och ska ses som riktning, inte ett löfte.
-- Coach-insikter är regelbaserade och är inte medicinsk rådgivning.
+Kamera:
+- Ta foto/Välj bild fungerar och bilden lagras lokalt.
+- Automatisk kaloriberäkning från bild ingår inte eftersom gratis-PWA:n saknar en lokal bild-AI-modell/server. Näringsvärden fylls i manuellt.

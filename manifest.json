@@ -1,5 +1,5 @@
 {
-  "name": "Health Coach",
+  "name": "Health Coach Stable",
   "short_name": "Health Coach",
   "start_url": "./",
   "display": "standalone",
@@ -16,5 +16,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "id": "health-coach-v21"
 }
