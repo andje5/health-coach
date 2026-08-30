@@ -1,21 +1,22 @@
-# Health Coach Stable v21
+# Health Coach v30 Food AI
 
-Denna version är QA-fokuserad och bygger på Expert v20.
+This version keeps the stable Health Auto Export flow and adds the full food-camera UX.
 
-Förbättringar:
-- Fixad svensk lokal datumhantering. Health Auto Export-dagar flyttas inte längre en dag bakåt av UTC-konvertering.
-- IndexedDB självtest vid start.
-- Backup/export och återställning av appdata. Matbilder utelämnas ur backupen för att hålla den liten.
-- Lagringskontroll och fallback: måltid kan sparas utan foto om bildlagring slår i kvot.
-- Säkrare visning av användartext i måltider.
-- Robustare cacheuppdatering/service worker.
-- Samma Health Auto Export-import och sammanslagning av överlappande datum.
+What works without any paid AI service:
+- Take food photo with iPhone rear camera
+- Compress preview locally
+- Save meals, images, kcal and macros locally in IndexedDB
+- Daily food totals
+- Meal history and deletion
+- Manual correction before saving
 
-Rekommenderad synk:
-- 1 gång per dag på kvällen för aktuella dagsråd.
-- 2–3 gånger per vecka räcker för trenduppföljning.
-- Radera ZIP och uppackad JSON från Filer efter att importen är bekräftad.
+What requires an AI backend:
+- Automatic food identification from the image
+- Portion-size estimation
+- Automatic kcal/protein/carbs/fat/fiber estimate
 
-Kamera:
-- Ta foto/Välj bild fungerar och bilden lagras lokalt.
-- Automatisk kaloriberäkning från bild ingår inte eftersom gratis-PWA:n saknar en lokal bild-AI-modell/server. Näringsvärden fylls i manuellt.
+Why:
+A PWA cannot securely embed an AI provider API key. A real Level 3 function therefore needs a server-side endpoint. v30 is already wired for such an endpoint.
+
+Health-data import remains unchanged:
+Health Auto Export -> JSON ZIP -> unpack -> import JSON in Health Coach.

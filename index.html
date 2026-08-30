@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#081018">
-<title>Health Coach</title>
+<title>Health Coach <span style="font-size:12px;color:#91a0b1;font-weight:600">v30 Food AI</span></title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
@@ -20,6 +20,19 @@
 .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.calDay{aspect-ratio:1;border-radius:11px;background:#15202b;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}.calDay.good{background:#12332a;color:#a7f3d0}.calDay.mid{background:#332c16;color:#fde68a}.calDay.low{background:#342029;color:#fecdd3}.calDay.none{opacity:.35}.legend{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-top:9px}.legend i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}.achievements{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.badgeCard{padding:12px;border-radius:16px;border:1px solid var(--line);background:#0f1822}.badgeCard.locked{opacity:.45}.badgeIcon{font-size:25px}.badgeTitle{font-weight:800;margin-top:5px}.badgeSub{font-size:11px;color:var(--muted);margin-top:3px}
 .mealPhoto{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;background:#0d1620;border:1px solid var(--line)}.mealList{display:grid;gap:9px}.mealItem{display:grid;grid-template-columns:70px 1fr auto;gap:10px;align-items:center;background:#0f1822;border:1px solid var(--line);border-radius:15px;padding:9px}.mealThumb{width:70px;height:60px;border-radius:10px;object-fit:cover;background:#15202b}.mealName{font-weight:800}.mealMeta{font-size:11px;color:var(--muted);margin-top:3px}.macro{font-size:12px;text-align:right}.notice{padding:12px;border-radius:14px;background:#132130;border:1px solid #294158;color:#bfd8ef;font-size:12px;line-height:1.45}
 @media(min-width:760px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.span4{grid-column:1/-1}.span2{grid-column:span 2}.achievements{grid-template-columns:repeat(4,1fr)}}@media(max-width:520px){.hero{grid-template-columns:1fr}.formgrid3{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(5,1fr)}}
+
+.foodai-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.food-preview{width:100%;max-height:320px;object-fit:cover;border-radius:18px;border:1px solid var(--line);background:#0e1620}
+.food-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.food-fields label{font-size:12px;color:var(--muted)}
+.food-fields input,.food-fields textarea,.food-fields select{width:100%;margin-top:5px;background:#0e1620;color:var(--text);border:1px solid var(--line);padding:11px;border-radius:12px}
+.food-fields textarea{min-height:72px;resize:vertical}
+.ai-note{font-size:12px;color:var(--muted);line-height:1.5}
+.ai-result{background:#0f1721;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}
+.meal-row{display:grid;grid-template-columns:1fr auto;gap:10px;border-top:1px solid var(--line);padding:10px 0}
+.meal-row:first-child{border-top:0}
+.meal-meta{font-size:12px;color:var(--muted);margin-top:3px}
+
 </style>
 </head><body><div class="wrap">
 <div class="top"><div><h1>Health Coach <span class="version">Stable v21</span></h1><div class="muted" id="dateTxt">Vikt, gång, sömn & mat</div></div><div class="sync" id="syncTxt">Ingen import ännu</div></div>
@@ -122,4 +135,180 @@ function switchView(v){document.querySelectorAll(".view").forEach(x=>x.classList
 $("jsonFile").addEventListener("change",e=>{const f=e.target.files?.[0];if(f)importHealthJSON(f);e.target.value=""});$("selfTestBtn").onclick=runSelfTest;$("backupBtn").onclick=exportBackup;$("restoreFile").addEventListener("change",e=>{const f=e.target.files?.[0];if(f)restoreBackup(f);e.target.value=""});$("resetAllBtn").onclick=resetAll;$("saveWeightBtn").onclick=saveWeight;$("saveSettingsBtn").onclick=saveSettings;$("clearHealthBtn").onclick=clearHealth;$("diagnosticBtn").onclick=()=>renderDataStatus();$("mealCamera").onchange=e=>pickMealImage(e.target.files?.[0]);$("mealLibrary").onchange=e=>pickMealImage(e.target.files?.[0]);$("saveMealBtn").onclick=saveMeal;document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchView(t.dataset.view));document.querySelectorAll("[data-range]").forEach(b=>b.onclick=()=>{trendRange=n(b.dataset.range);document.querySelectorAll("[data-range]").forEach(x=>x.classList.toggle("active",x===b));renderTrends()});window.addEventListener("resize",()=>{renderTrends();renderWeight()});
 (async()=>{try{health=await dbGet("health")||null;weights=await dbGet("weights")||[];meals=await dbGet("meals")||[];settings=Object.assign(settings,await dbGet("settings")||{});$("weightDate").value=todayISO();$("mealDate").value=todayISO();$("dateTxt").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});renderAll();setTimeout(runSelfTest,150)}catch(e){console.error(e);$("importStatus").className="status error";$("importStatus").textContent="Kunde inte starta lokal databas: "+e.message}})();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js").catch(console.warn);
+
+// ===== Food AI v30 =====
+const FOOD_DB_NAME="healthcoach-food-db";
+const FOOD_STORE="meals";
+const FOOD_DB_VERSION=1;
+let currentMealImageBlob=null;
+
+function openFoodDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(FOOD_DB_NAME,FOOD_DB_VERSION);
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(FOOD_STORE)){
+        const s=db.createObjectStore(FOOD_STORE,{keyPath:"id"});
+        s.createIndex("date","date",{unique:false});
+      }
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function saveMealDB(meal){
+  const db=await openFoodDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(FOOD_STORE,"readwrite");
+    tx.objectStore(FOOD_STORE).put(meal);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+async function getMealsDB(){
+  const db=await openFoodDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(FOOD_STORE,"readonly");
+    const req=tx.objectStore(FOOD_STORE).getAll();
+    req.onsuccess=()=>resolve(req.result||[]);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function deleteMealDB(id){
+  const db=await openFoodDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(FOOD_STORE,"readwrite");
+    tx.objectStore(FOOD_STORE).delete(id);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+function localDateKey(d=new Date()){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+async function compressImage(file,maxWidth=1280,quality=.78){
+  const bitmap=await createImageBitmap(file);
+  const scale=Math.min(1,maxWidth/bitmap.width);
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.round(bitmap.width*scale);
+  canvas.height=Math.round(bitmap.height*scale);
+  const ctx=canvas.getContext("2d");
+  ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
+  return await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",quality));
+}
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+function resetMealForm(){
+  currentMealImageBlob=null;
+  const ids=["mealName","mealPortion","mealKcal","mealProtein","mealCarbs","mealFat","mealFiber","mealConfidence","mealNotes"];
+  ids.forEach(id=>document.getElementById(id).value="");
+  const img=document.getElementById("mealPreview");
+  img.src=""; img.style.display="none";
+  document.getElementById("mealAIStatusText").textContent="Ingen bild analyserad ännu.";
+}
+async function renderMeals(){
+  const meals=(await getMealsDB()).sort((a,b)=>b.ts-a.ts);
+  const today=localDateKey();
+  const todays=meals.filter(m=>m.date===today);
+  const sum=(key)=>todays.reduce((s,m)=>s+Number(m[key]||0),0);
+  document.getElementById("foodTodayKcal").textContent=Math.round(sum("kcal"))+" kcal";
+  document.getElementById("foodTodayProtein").textContent=sum("protein").toFixed(1).replace(".",",")+" g";
+  document.getElementById("foodTodayCarbs").textContent=sum("carbs").toFixed(1).replace(".",",")+" g";
+  document.getElementById("foodTodayFat").textContent=sum("fat").toFixed(1).replace(".",",")+" g";
+  const box=document.getElementById("mealHistory");
+  box.innerHTML="";
+  meals.slice(0,12).forEach(m=>{
+    const row=document.createElement("div"); row.className="meal-row";
+    const left=document.createElement("div");
+    const title=document.createElement("b"); title.textContent=m.name||"Måltid";
+    const meta=document.createElement("div"); meta.className="meal-meta";
+    meta.textContent=`${m.date} · ${Math.round(m.kcal||0)} kcal · P ${Number(m.protein||0).toFixed(0)} g · K ${Number(m.carbs||0).toFixed(0)} g · F ${Number(m.fat||0).toFixed(0)} g`;
+    left.append(title,meta);
+    const del=document.createElement("button"); del.className="secondary"; del.textContent="Ta bort";
+    del.onclick=async()=>{await deleteMealDB(m.id);await renderMeals();};
+    row.append(left,del); box.append(row);
+  });
+}
+async function analyzeMealWithAI(){
+  const status=document.getElementById("mealAIStatusText");
+  if(!currentMealImageBlob){status.textContent="Ta ett foto först.";return;}
+  const endpoint=(localStorage.getItem("hc-food-ai-endpoint")||"").trim();
+  if(!endpoint){
+    status.textContent="AI-endpoint är inte konfigurerad ännu. Kameran och måltidsloggen fungerar, men automatisk nivå 3-analys kräver en AI-server/API.";
+    return;
+  }
+  try{
+    status.textContent="Analyserar bilden…";
+    const dataUrl=await blobToDataURL(currentMealImageBlob);
+    const res=await fetch(endpoint,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({image:dataUrl,locale:"sv-SE"})
+    });
+    if(!res.ok) throw new Error("AI-server svarade "+res.status);
+    const out=await res.json();
+    document.getElementById("mealName").value=out.name||"";
+    document.getElementById("mealPortion").value=out.portion_g??"";
+    document.getElementById("mealKcal").value=out.kcal??"";
+    document.getElementById("mealProtein").value=out.protein_g??"";
+    document.getElementById("mealCarbs").value=out.carbs_g??"";
+    document.getElementById("mealFat").value=out.fat_g??"";
+    document.getElementById("mealFiber").value=out.fiber_g??"";
+    document.getElementById("mealConfidence").value=out.confidence_pct??"";
+    status.textContent="AI-analys klar. Kontrollera uppskattningen och korrigera vid behov innan du sparar.";
+  }catch(e){
+    console.error(e);
+    status.textContent="AI-analysen misslyckades: "+e.message;
+  }
+}
+
+document.getElementById("mealCamera")?.addEventListener("change",async e=>{
+  const f=e.target.files?.[0]; if(!f)return;
+  try{
+    currentMealImageBlob=await compressImage(f);
+    const url=URL.createObjectURL(currentMealImageBlob);
+    const img=document.getElementById("mealPreview");
+    img.src=url; img.style.display="block";
+    document.getElementById("mealAIStatusText").textContent="Bild klar. Tryck “Analysera med AI” eller fyll i värden manuellt.";
+  }catch(err){
+    document.getElementById("mealAIStatusText").textContent="Kunde inte läsa bilden: "+err.message;
+  }
+});
+document.getElementById("analyzeMealBtn")?.addEventListener("click",analyzeMealWithAI);
+document.getElementById("clearMealBtn")?.addEventListener("click",resetMealForm);
+document.getElementById("saveMealBtn")?.addEventListener("click",async()=>{
+  const meal={
+    id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),
+    ts:Date.now(),
+    date:localDateKey(),
+    name:document.getElementById("mealName").value.trim()||"Måltid",
+    portion:Number(document.getElementById("mealPortion").value||0),
+    kcal:Number(document.getElementById("mealKcal").value||0),
+    protein:Number(document.getElementById("mealProtein").value||0),
+    carbs:Number(document.getElementById("mealCarbs").value||0),
+    fat:Number(document.getElementById("mealFat").value||0),
+    fiber:Number(document.getElementById("mealFiber").value||0),
+    confidence:Number(document.getElementById("mealConfidence").value||0),
+    notes:document.getElementById("mealNotes").value.trim(),
+    image:currentMealImageBlob
+  };
+  try{
+    await saveMealDB(meal);
+    document.getElementById("mealAIStatusText").textContent="Måltiden sparad.";
+    resetMealForm();
+    await renderMeals();
+  }catch(e){
+    console.error(e);
+    document.getElementById("mealAIStatusText").textContent="Kunde inte spara måltiden: "+e.message;
+  }
+});
+renderMeals().catch(console.warn);
+
 </script></body></html>
