@@ -7,7 +7,6 @@
 <title>Health Coach</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <style>
 :root{--bg:#091017;--card:#121b25;--card2:#0e1620;--line:#233243;--text:#f4f7fa;--muted:#91a0b1;--g:#70e1b1;--b:#63a7ff;--y:#f3ca52}
 *{box-sizing:border-box}
@@ -79,13 +78,13 @@ input[type=file]{display:none}input[type=number]{width:100%;background:#0e1620;c
 
   <div class="card span4">
     <div class="section">Importera Apple Hälsa</div>
-    <div class="muted">Välj ZIP-filen från Health Auto Export. All tolkning sker lokalt på din iPhone; filen skickas inte från webbläsaren.</div>
+    <div class="muted">Packa först upp ZIP-filen i appen Filer och välj sedan den stora JSON-filen här. All tolkning sker lokalt på din iPhone.</div>
     <div class="actions">
-      <label class="upload" for="zipFile">Välj Health ZIP</label>
-      <input id="zipFile" type="file" accept=".zip,application/zip">
+      <label class="upload" for="jsonFile">Välj Health JSON</label>
+      <input id="jsonFile" type="file" accept=".json,application/json">
       <button class="secondary" onclick="clearHealth()">Rensa hälsodata</button>
     </div>
-    <div class="status" id="importStatus">Stödjer exportformatet du skickade: data.metrics + data.workouts.</div>
+    <div class="status" id="importStatus">Stödjer din Health Auto Export JSON: data.metrics + data.workouts.</div>
   </div>
 
   <div class="card span4">
@@ -118,23 +117,30 @@ function set(id,v){document.getElementById(id).textContent=v}
 function goal(id,b){document.getElementById(id).className="dot"+(b?" done":"")}
 function parseDate(s){return new Date((s||"").replace(" +0200","+02:00").replace(" +0100","+01:00").replace(" ","T"))}
 
-async function importZip(file){
+async function importJSONFile(file){
   const st=document.getElementById("importStatus");
   try{
-    st.textContent="Läser ZIP…";
-    const zip=await JSZip.loadAsync(file);
-    const jsonName=Object.keys(zip.files).find(n=>n.toLowerCase().endsWith(".json"));
-    if(!jsonName) throw new Error("Ingen JSON-fil hittades i ZIP-filen.");
+    st.textContent="Läser JSON…";
+    if(!file.name.toLowerCase().endsWith(".json")){
+      throw new Error("Välj den uppackade .json-filen, inte ZIP-filen.");
+    }
+    const text=await file.text();
     st.textContent="Tolkar Apple Hälsa-data…";
-    const text=await zip.file(jsonName).async("string");
     const raw=JSON.parse(text);
-    if(!raw.data || !Array.isArray(raw.data.metrics)) throw new Error("Exportformatet känns inte igen.");
-    current={metrics:raw.data.metrics,workouts:raw.data.workouts||[],importedAt:new Date().toISOString()};
+    if(!raw.data || !Array.isArray(raw.data.metrics)){
+      throw new Error("Exportformatet känns inte igen.");
+    }
+    current={
+      metrics:raw.data.metrics,
+      workouts:raw.data.workouts||[],
+      importedAt:new Date().toISOString()
+    };
     localStorage.setItem("hc-health",JSON.stringify(current));
     render();
     st.textContent=`Klart: ${raw.data.metrics.length} hälsomått och ${(raw.data.workouts||[]).length} träningspass importerade.`;
   }catch(e){
-    console.error(e); st.textContent="Importen misslyckades: "+e.message;
+    console.error(e);
+    st.textContent="Importen misslyckades: "+e.message;
   }
 }
 
@@ -185,7 +191,7 @@ function loadWeight(){try{return JSON.parse(localStorage.getItem("hc-weight"))||
 function saveWeight(){const s=parseFloat(document.getElementById("startW").value),t=parseFloat(document.getElementById("todayW").value);const old=loadWeight();localStorage.setItem("hc-weight",JSON.stringify({start:Number.isFinite(s)?s:old.start,today:Number.isFinite(t)?t:old.today}));renderWeight()}
 function renderWeight(){const w=loadWeight();document.getElementById("startW").value=w.start||"";document.getElementById("todayW").value=w.today||"";set("weight",w.today?one(w.today)+" kg":"–");set("left",w.today?one(Math.max(0,w.today-GOAL))+" kg":"–");set("g4",w.today?one(w.today)+" kg":"–");goal("d4",!!w.today);if(w.start&&w.today&&w.start>GOAL){const p=Math.max(0,Math.min(100,(w.start-w.today)/(w.start-GOAL)*100));document.getElementById("wp").style.width=p+"%";const lost=w.start-w.today;set("wtrend",(lost>=0?"↓ ":"↑ ")+one(Math.abs(lost))+" kg sedan start")}else{document.getElementById("wp").style.width="0%";set("wtrend","Registrera startvikt och dagens vikt.")}}
 function clearHealth(){localStorage.removeItem("hc-health");current=null;location.reload()}
-document.getElementById("zipFile").addEventListener("change",e=>{if(e.target.files[0])importZip(e.target.files[0])});
+document.getElementById("jsonFile").addEventListener("change",e=>{if(e.target.files[0])importJSONFile(e.target.files[0])});
 document.getElementById("dateTxt").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
 renderWeight();
 try{current=JSON.parse(localStorage.getItem("hc-health"));if(current)render()}catch{}

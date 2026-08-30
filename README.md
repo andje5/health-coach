@@ -1,39 +1,31 @@
-# Health Coach v3
+# Health Coach v3.1
 
-Denna version kan importera ZIP-exporten direkt från Health Auto Export i Safari/iPhone.
+Fix för iPhone-import.
+
+Varför ändringen:
+v3 försökte läsa ZIP-filen med ett externt JavaScript-bibliotek. På iPhone/PWA kan det biblioteket ibland inte laddas, vilket gav "Import misslyckades".
+
+v3.1 behöver inget externt ZIP-bibliotek. iPhone packar upp ZIP-filen först och Health Coach läser sedan JSON-filen direkt.
 
 ## Uppdatera GitHub
-1. Packa upp denna ZIP på PC.
+1. Packa upp HealthCoachPWA_v3_1.zip på PC.
 2. Öppna github.com/andje5/health-coach
-3. Ladda upp/ersätt index.html, manifest.json, service-worker.js, icon-192.png och icon-512.png.
+3. Ersätt index.html, manifest.json, service-worker.js, icon-192.png och icon-512.png.
 4. Commit changes.
 5. Vänta 1–3 minuter.
-6. Öppna https://andje5.github.io/health-coach/ på iPhone.
-7. Om gammal version visas: stäng appen helt och öppna igen, eller öppna sidan i Safari och uppdatera.
+6. Öppna Health Coach på iPhone igen.
 
-## Import på iPhone
-1. I Health Auto Export: skapa en manuell ZIP/JSON-export.
-2. Spara ZIP-filen i Filer på iPhone.
-3. Öppna Health Coach.
-4. Tryck "Välj Health ZIP".
-5. Välj ZIP-filen.
-6. Vänta tills appen säger att importen är klar.
+## Importera på iPhone
+1. Öppna Filer.
+2. Leta upp HealthAutoExport_....zip.
+3. Tryck en gång på ZIP-filen. iPhone skapar en uppackad mapp bredvid.
+4. Öppna mappen.
+5. Där finns GPX-filer och en stor fil som heter ungefär:
+   HealthAutoExport-2026-07-31-2026-08-30.json
+6. Öppna Health Coach.
+7. Tryck "Välj Health JSON".
+8. Välj den stora JSON-filen.
+9. Vänta medan cirka 18 MB JSON läses.
+10. När importen är klar fylls dashboarden.
 
-All JSON-tolkning sker lokalt i webbläsaren. Appen skickar inte ZIP-filen till en server.
-
-## Format som stöds
-Formatet i filen HealthAutoExport_20260830153351.zip:
-- data.metrics
-- data.workouts
-
-Mått som används:
-- step_count
-- walking_running_distance
-- active_energy
-- apple_exercise_time
-- sleep_analysis
-- resting_heart_rate
-- heart_rate_variability
-- vo2_max
-
-Vikt finns inte i den exporterade filen som analyserades, därför registreras den manuellt tills body_mass finns i framtida exporter.
+All bearbetning sker lokalt i Safari/PWA.
