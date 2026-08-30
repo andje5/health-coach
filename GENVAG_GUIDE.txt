@@ -1,0 +1,34 @@
+
+HEALTH COACH – IPHONE GENVÄG
+
+Mål:
+Apple Watch -> Apple Hälsa -> Genvägar -> Health Coach
+
+Appadress:
+https://andje5.github.io/health-coach/
+
+Första versionen av genvägen ska hämta:
+- steg idag
+- promenadtid idag
+- aktiva kalorier idag
+- sömn senaste natt
+- vilopuls
+- HRV
+- VO2 max
+
+Genvägen ska därefter bygga JSON enligt:
+{
+  "steps": 8300,
+  "walkMinutes": 68,
+  "activeEnergyKcal": 610,
+  "sleepHours": 7.7,
+  "restingHeartRate": 56,
+  "hrvMs": 47,
+  "vo2Max": 39.1
+}
+
+Sedan URL-kodas JSON-texten och följande URL öppnas:
+https://andje5.github.io/health-coach/?data=URLKODAD_JSON
+
+OBS:
+Exakta namn på Apple Genvägar-åtgärder kan variera med iOS-version och språk.
