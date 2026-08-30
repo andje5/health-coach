@@ -1,26 +1,26 @@
-# Health Coach v3.3
+# Health Coach v3.4
 
-Detta är den riktiga fixen för "The quota has been exceeded".
+Detta är kvotfixen som helt tar bort Health-data från localStorage.
 
-Felet i v3.2:
-v3.2-paketet innehöll av misstag fortfarande den gamla importkoden och försökte spara hela Health Auto Export-filen. Därför fick du samma kvotfel.
+Din export har bara cirka 31 dagsposter för de relevanta måtten, så själva datamängden är inte problemet. Felet kommer från Safari/PWA-lagringen på iPhone.
 
-v3.3:
-- läser hela JSON-filen från Filer
-- behåller endast 9 relevanta mätserier
-- sparar bara cirka några tiotal kB i localStorage
-- sparar inte GPX, råa träningspass eller övriga HealthKit-serier
-- visar storleken på den sparade kompakta datan efter lyckad import
+v3.4:
+- läser JSON-filen direkt från Filer
+- filtrerar till relevanta mått
+- renderar dashboarden direkt i minnet
+- skriver INTE Health-data till localStorage
+- kan därför inte få QuotaExceededError från Health-importen
 
-## Uppdatera
-1. Packa upp HealthCoachPWA_v3_3.zip på PC.
+Nackdel:
+Om appen stängs helt behöver JSON-filen importeras igen. När importen fungerar stabilt kan vi senare lägga persistent lagring i IndexedDB.
+
+## Uppdatering
+1. Packa upp v3.4.
 2. Ersätt filerna i GitHub-repot.
-3. Commit changes.
-4. Vänta 1–3 minuter.
-5. På iPhone: öppna sidan i Safari och uppdatera den.
-6. Stäng hemskärmsappen helt och öppna den igen.
-7. Tryck "Rensa hälsodata".
-8. Tryck "Välj Health JSON".
-9. Välj HealthAutoExport-2026-07-31-2026-08-30.json.
-
-Efter lyckad import ska statusraden visa antal relevanta hälsomått, träningspass och hur många kB som sparades.
+3. Commit.
+4. Vänta 1-3 minuter.
+5. Öppna GitHub Pages-adressen i Safari och uppdatera.
+6. Stäng hemskärmsappen helt och öppna igen.
+7. Tryck Rensa hälsodata.
+8. Tryck Välj Health JSON.
+9. Välj samma uppackade JSON-fil.

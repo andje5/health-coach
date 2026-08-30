@@ -84,7 +84,7 @@ input[type=file]{display:none}input[type=number]{width:100%;background:#0e1620;c
       <input id="jsonFile" type="file" accept=".json,application/json">
       <button class="secondary" onclick="clearHealth()">Rensa hälsodata</button>
     </div>
-    <div class="status" id="importStatus">Stödjer din Health Auto Export JSON: data.metrics + data.workouts.</div>
+    <div class="status" id="importStatus">v3.4 läser Health JSON direkt och sparar inte hälsodata i webbläsarlagringen, vilket undviker iPhones kvotfel.</div>
   </div>
 
   <div class="card span4">
@@ -110,8 +110,17 @@ const one=n=>Number(n||0).toFixed(1).replace(".",",");
 function metricMap(metrics){const o={};for(const m of metrics||[])o[m.name]=m;return o}
 function q(m){return (m&&m.data)||[]}
 function latest(m){const a=q(m);return a.length?a[a.length-1]:null}
-function qty(m){const x=latest(m);return x&&typeof x.qty==="number"?x.qty:0}
-function avg(m,days=30){const a=q(m).slice(-days).map(x=>x.qty).filter(Number.isFinite);return a.length?a.reduce((s,x)=>s+x,0)/a.length:0}
+function qty(m){
+  const x=latest(m);
+  if(!x)return 0;
+  if(typeof x.qty==="number")return x.qty;
+  if(typeof x.totalSleep==="number")return x.totalSleep;
+  return 0;
+}
+function avg(m,days=30){
+  const a=q(m).slice(-days).map(x=>typeof x.qty==="number"?x.qty:x.totalSleep).filter(Number.isFinite);
+  return a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
+}
 function kcalFromKJ(kj){return kj/4.184}
 function set(id,v){document.getElementById(id).textContent=v}
 function goal(id,b){document.getElementById(id).className="dot"+(b?" done":"")}
@@ -124,20 +133,52 @@ async function importJSONFile(file){
     if(!file.name.toLowerCase().endsWith(".json")){
       throw new Error("Välj den uppackade .json-filen, inte ZIP-filen.");
     }
+
     const text=await file.text();
     st.textContent="Tolkar Apple Hälsa-data…";
     const raw=JSON.parse(text);
+
     if(!raw.data || !Array.isArray(raw.data.metrics)){
       throw new Error("Exportformatet känns inte igen.");
     }
+
+    const keep=new Set([
+      "step_count","walking_running_distance","active_energy",
+      "apple_exercise_time","sleep_analysis","resting_heart_rate",
+      "heart_rate_variability","vo2_max","body_mass"
+    ]);
+
+    const selected=(raw.data.metrics||[])
+      .filter(m=>keep.has(m.name))
+      .map(m=>({
+        name:m.name,
+        units:m.units||"",
+        data:(m.data||[]).map(x=>{
+          if(m.name==="sleep_analysis"){
+            return {
+              date:x.date,
+              totalSleep:Number(x.totalSleep||0),
+              deep:Number(x.deep||0),
+              rem:Number(x.rem||0),
+              core:Number(x.core||0),
+              awake:Number(x.awake||0)
+            };
+          }
+          return {date:x.date, qty:Number(x.qty||0)};
+        })
+      }));
+
     current={
-      metrics:raw.data.metrics,
-      workouts:raw.data.workouts||[],
+      metrics:selected,
+      workoutsCount:(raw.data.workouts||[]).length,
       importedAt:new Date().toISOString()
     };
-    localStorage.setItem("hc-health",JSON.stringify(current));
+
+    // Viktigt i v3.4: ingen Health-data skrivs till localStorage.
+    // Detta kringgår iPhones QuotaExceededError helt.
     render();
-    st.textContent=`Klart: ${raw.data.metrics.length} hälsomått och ${(raw.data.workouts||[]).length} träningspass importerade.`;
+
+    st.textContent=`Klart: ${selected.length} relevanta hälsomått och ${(raw.data.workouts||[]).length} träningspass importerade.`;
   }catch(e){
     console.error(e);
     st.textContent="Importen misslyckades: "+e.message;
@@ -172,7 +213,7 @@ function render(){
   set("avgDist",avg(m.walking_running_distance)?one(avg(m.walking_running_distance))+" km":"–");
   set("avgSleep",avg(m.sleep_analysis)?one(avg(m.sleep_analysis))+" h":"–");
   set("avgRhr",avg(m.resting_heart_rate)?sv(avg(m.resting_heart_rate))+" bpm":"–");
-  set("workouts",sv(current.workouts.length));
+  set("workouts",sv(current.workoutsCount||0));
 
   let ins=[];
   const aSteps=avg(m.step_count), aSleep=avg(m.sleep_analysis), aRhr=avg(m.resting_heart_rate);
@@ -190,11 +231,18 @@ function render(){
 function loadWeight(){try{return JSON.parse(localStorage.getItem("hc-weight"))||{}}catch{return {}}}
 function saveWeight(){const s=parseFloat(document.getElementById("startW").value),t=parseFloat(document.getElementById("todayW").value);const old=loadWeight();localStorage.setItem("hc-weight",JSON.stringify({start:Number.isFinite(s)?s:old.start,today:Number.isFinite(t)?t:old.today}));renderWeight()}
 function renderWeight(){const w=loadWeight();document.getElementById("startW").value=w.start||"";document.getElementById("todayW").value=w.today||"";set("weight",w.today?one(w.today)+" kg":"–");set("left",w.today?one(Math.max(0,w.today-GOAL))+" kg":"–");set("g4",w.today?one(w.today)+" kg":"–");goal("d4",!!w.today);if(w.start&&w.today&&w.start>GOAL){const p=Math.max(0,Math.min(100,(w.start-w.today)/(w.start-GOAL)*100));document.getElementById("wp").style.width=p+"%";const lost=w.start-w.today;set("wtrend",(lost>=0?"↓ ":"↑ ")+one(Math.abs(lost))+" kg sedan start")}else{document.getElementById("wp").style.width="0%";set("wtrend","Registrera startvikt och dagens vikt.")}}
-function clearHealth(){localStorage.removeItem("hc-health");current=null;location.reload()}
+function clearHealth(){
+  try{
+    localStorage.removeItem("hc-health");
+    localStorage.removeItem("healthcoach-data");
+  }catch(e){}
+  current=null;
+  document.getElementById("importStatus").textContent="Gamla lagrade hälsodata rensade.";
+}
 document.getElementById("jsonFile").addEventListener("change",e=>{if(e.target.files[0])importJSONFile(e.target.files[0])});
 document.getElementById("dateTxt").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
 renderWeight();
-try{current=JSON.parse(localStorage.getItem("hc-health"));if(current)render()}catch{}
+// v3.4: Health-data laddas via JSON-import och sparas inte permanent.
 if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");
 </script>
 </body>
