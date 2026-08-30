@@ -1,31 +1,41 @@
-# Health Coach v3.1
+# Health Coach v3.2
 
-Fix för iPhone-import.
+Fix för felet "The quota has been exceeded".
 
-Varför ändringen:
-v3 försökte läsa ZIP-filen med ett externt JavaScript-bibliotek. På iPhone/PWA kan det biblioteket ibland inte laddas, vilket gav "Import misslyckades".
+Orsak:
+v3.1 försökte spara hela Health Auto Export JSON-filen i webbläsarens localStorage.
+Din export är mycket större än localStorage-kvoten på iPhone.
 
-v3.1 behöver inget externt ZIP-bibliotek. iPhone packar upp ZIP-filen först och Health Coach läser sedan JSON-filen direkt.
+Lösning:
+v3.2 läser fortfarande hela JSON-filen, men behåller bara de relevanta 30-dagarsserierna:
+- steg
+- gång/löpdistans
+- aktiv energi
+- träningsminuter
+- sömn
+- vilopuls
+- HRV
+- VO2 max
+- vikt om body_mass finns
+
+GPX och övriga rådata sparas inte i webbläsaren.
 
 ## Uppdatera GitHub
-1. Packa upp HealthCoachPWA_v3_1.zip på PC.
-2. Öppna github.com/andje5/health-coach
-3. Ersätt index.html, manifest.json, service-worker.js, icon-192.png och icon-512.png.
-4. Commit changes.
-5. Vänta 1–3 minuter.
-6. Öppna Health Coach på iPhone igen.
+1. Packa upp HealthCoachPWA_v3_2.zip.
+2. Ersätt filerna i github.com/andje5/health-coach.
+3. Commit changes.
+4. Vänta 1–3 minuter.
+5. Stäng Health Coach helt på iPhone och öppna igen.
+6. Om den gamla versionen ligger kvar: öppna sidan i Safari, uppdatera, och starta sedan hemskärmsappen igen.
 
-## Importera på iPhone
-1. Öppna Filer.
-2. Leta upp HealthAutoExport_....zip.
-3. Tryck en gång på ZIP-filen. iPhone skapar en uppackad mapp bredvid.
-4. Öppna mappen.
-5. Där finns GPX-filer och en stor fil som heter ungefär:
-   HealthAutoExport-2026-07-31-2026-08-30.json
-6. Öppna Health Coach.
-7. Tryck "Välj Health JSON".
-8. Välj den stora JSON-filen.
-9. Vänta medan cirka 18 MB JSON läses.
-10. När importen är klar fylls dashboarden.
+## Innan ny import
+Tryck "Rensa hälsodata" en gång så eventuella gamla poster tas bort.
 
-All bearbetning sker lokalt i Safari/PWA.
+## Import
+1. Packa upp Health Auto Export ZIP i Filer.
+2. Öppna Health Coach.
+3. Tryck "Välj Health JSON".
+4. Välj den stora JSON-filen.
+5. Vänta på meddelandet "Klart".
+
+All tolkning sker lokalt på iPhone.
