@@ -36,7 +36,7 @@ input[type=file]{display:none}input[type=number]{width:100%;background:#0e1620;c
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div><h1>Health Coach</h1><div class="muted" id="dateTxt">Vikt & gång</div></div><div class="sync" id="syncTxt">Ingen import ännu</div></div>
+<div class="top"><div><h1>Health Coach</h1><div class="muted" id="dateTxt">Vikt, gång & återhämtning</div></div><div class="sync" id="syncTxt">Ingen import ännu</div></div>
 
 <div class="grid">
   <div class="card span2 hero">
@@ -84,7 +84,7 @@ input[type=file]{display:none}input[type=number]{width:100%;background:#0e1620;c
       <input id="jsonFile" type="file" accept=".json,application/json">
       <button class="secondary" onclick="clearHealth()">Rensa hälsodata</button>
     </div>
-    <div class="status" id="importStatus">v3.4 läser Health JSON direkt och sparar inte hälsodata i webbläsarlagringen, vilket undviker iPhones kvotfel.</div>
+    <div class="status" id="importStatus">v4 använder IndexedDB på iPhone, så importerad hälsodata ligger kvar även när appen stängs.</div>
   </div>
 
   <div class="card span4">
@@ -174,15 +174,63 @@ async function importJSONFile(file){
       importedAt:new Date().toISOString()
     };
 
-    // Viktigt i v3.4: ingen Health-data skrivs till localStorage.
-    // Detta kringgår iPhones QuotaExceededError helt.
+    await saveHealthDB(current);
     render();
 
-    st.textContent=`Klart: ${selected.length} relevanta hälsomått och ${(raw.data.workouts||[]).length} träningspass importerade.`;
+    st.textContent=`Klart: ${selected.length} relevanta hälsomått och ${(raw.data.workouts||[]).length} träningspass importerade och sparade lokalt.`;
   }catch(e){
     console.error(e);
     st.textContent="Importen misslyckades: "+e.message;
   }
+}
+
+
+const DB_NAME="healthcoach-db";
+const STORE_NAME="health";
+const DB_VERSION=1;
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,DB_VERSION);
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(STORE_NAME)){
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+
+async function saveHealthDB(data){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE_NAME,"readwrite");
+    tx.objectStore(STORE_NAME).put(data,"latest");
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function loadHealthDB(){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE_NAME,"readonly");
+    const req=tx.objectStore(STORE_NAME).get("latest");
+    req.onsuccess=()=>resolve(req.result||null);
+    req.onerror=()=>reject(req.error);
+  });
+}
+
+async function clearHealthDB(){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE_NAME,"readwrite");
+    tx.objectStore(STORE_NAME).delete("latest");
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
 }
 
 function render(){
@@ -231,18 +279,30 @@ function render(){
 function loadWeight(){try{return JSON.parse(localStorage.getItem("hc-weight"))||{}}catch{return {}}}
 function saveWeight(){const s=parseFloat(document.getElementById("startW").value),t=parseFloat(document.getElementById("todayW").value);const old=loadWeight();localStorage.setItem("hc-weight",JSON.stringify({start:Number.isFinite(s)?s:old.start,today:Number.isFinite(t)?t:old.today}));renderWeight()}
 function renderWeight(){const w=loadWeight();document.getElementById("startW").value=w.start||"";document.getElementById("todayW").value=w.today||"";set("weight",w.today?one(w.today)+" kg":"–");set("left",w.today?one(Math.max(0,w.today-GOAL))+" kg":"–");set("g4",w.today?one(w.today)+" kg":"–");goal("d4",!!w.today);if(w.start&&w.today&&w.start>GOAL){const p=Math.max(0,Math.min(100,(w.start-w.today)/(w.start-GOAL)*100));document.getElementById("wp").style.width=p+"%";const lost=w.start-w.today;set("wtrend",(lost>=0?"↓ ":"↑ ")+one(Math.abs(lost))+" kg sedan start")}else{document.getElementById("wp").style.width="0%";set("wtrend","Registrera startvikt och dagens vikt.")}}
-function clearHealth(){
+async function clearHealth(){
   try{
+    await clearHealthDB();
     localStorage.removeItem("hc-health");
     localStorage.removeItem("healthcoach-data");
   }catch(e){}
+  current=null;
+  document.getElementById("importStatus").textContent="Sparad hälsodata rensad.";
+  document.getElementById("syncTxt").textContent="Ingen import ännu";
+}catch(e){}
   current=null;
   document.getElementById("importStatus").textContent="Gamla lagrade hälsodata rensade.";
 }
 document.getElementById("jsonFile").addEventListener("change",e=>{if(e.target.files[0])importJSONFile(e.target.files[0])});
 document.getElementById("dateTxt").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
 renderWeight();
-// v3.4: Health-data laddas via JSON-import och sparas inte permanent.
+(async()=>{
+  try{
+    current=await loadHealthDB();
+    if(current)render();
+  }catch(e){
+    console.warn("Kunde inte läsa IndexedDB",e);
+  }
+})();
 if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");
 </script>
 </body>

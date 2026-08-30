@@ -1,26 +1,33 @@
-# Health Coach v3.4
+# Health Coach v4
 
-Detta är kvotfixen som helt tar bort Health-data från localStorage.
+Nyckelförbättring:
+Health-data sparas nu i IndexedDB istället för localStorage.
 
-Din export har bara cirka 31 dagsposter för de relevanta måtten, så själva datamängden är inte problemet. Felet kommer från Safari/PWA-lagringen på iPhone.
+Det betyder:
+- importera JSON en gång
+- stäng appen
+- öppna den igen
+- datan ska ligga kvar
 
-v3.4:
-- läser JSON-filen direkt från Filer
-- filtrerar till relevanta mått
-- renderar dashboarden direkt i minnet
-- skriver INTE Health-data till localStorage
-- kan därför inte få QuotaExceededError från Health-importen
+IndexedDB klarar betydligt större datamängder än localStorage och är rätt väg för en PWA på iPhone.
 
-Nackdel:
-Om appen stängs helt behöver JSON-filen importeras igen. När importen fungerar stabilt kan vi senare lägga persistent lagring i IndexedDB.
-
-## Uppdatering
-1. Packa upp v3.4.
+## Uppdatera
+1. Packa upp HealthCoachPWA_v4.zip på PC.
 2. Ersätt filerna i GitHub-repot.
-3. Commit.
-4. Vänta 1-3 minuter.
+3. Commit changes.
+4. Vänta 1–3 minuter.
 5. Öppna GitHub Pages-adressen i Safari och uppdatera.
-6. Stäng hemskärmsappen helt och öppna igen.
-7. Tryck Rensa hälsodata.
-8. Tryck Välj Health JSON.
-9. Välj samma uppackade JSON-fil.
+6. Stäng hemskärmsappen helt och öppna den igen.
+7. Importera Health JSON en gång.
+8. Stäng Health Coach helt.
+9. Öppna den igen och kontrollera att datan fortfarande finns kvar.
+
+## Viktigt
+Vikt sparas fortfarande separat i localStorage eftersom den bara är ett par små värden och inte orsakar kvotproblem.
+
+Nästa utvecklingssteg:
+- viktgraf
+- 7/30/90-dagarstrender
+- prognos mot 95 kg
+- bättre coach-insikter
+- enklare ny-import där nya dagar läggs till i historiken
