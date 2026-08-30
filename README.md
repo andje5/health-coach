@@ -1,41 +1,26 @@
-# Health Coach v3.2
+# Health Coach v3.3
 
-Fix för felet "The quota has been exceeded".
+Detta är den riktiga fixen för "The quota has been exceeded".
 
-Orsak:
-v3.1 försökte spara hela Health Auto Export JSON-filen i webbläsarens localStorage.
-Din export är mycket större än localStorage-kvoten på iPhone.
+Felet i v3.2:
+v3.2-paketet innehöll av misstag fortfarande den gamla importkoden och försökte spara hela Health Auto Export-filen. Därför fick du samma kvotfel.
 
-Lösning:
-v3.2 läser fortfarande hela JSON-filen, men behåller bara de relevanta 30-dagarsserierna:
-- steg
-- gång/löpdistans
-- aktiv energi
-- träningsminuter
-- sömn
-- vilopuls
-- HRV
-- VO2 max
-- vikt om body_mass finns
+v3.3:
+- läser hela JSON-filen från Filer
+- behåller endast 9 relevanta mätserier
+- sparar bara cirka några tiotal kB i localStorage
+- sparar inte GPX, råa träningspass eller övriga HealthKit-serier
+- visar storleken på den sparade kompakta datan efter lyckad import
 
-GPX och övriga rådata sparas inte i webbläsaren.
-
-## Uppdatera GitHub
-1. Packa upp HealthCoachPWA_v3_2.zip.
-2. Ersätt filerna i github.com/andje5/health-coach.
+## Uppdatera
+1. Packa upp HealthCoachPWA_v3_3.zip på PC.
+2. Ersätt filerna i GitHub-repot.
 3. Commit changes.
 4. Vänta 1–3 minuter.
-5. Stäng Health Coach helt på iPhone och öppna igen.
-6. Om den gamla versionen ligger kvar: öppna sidan i Safari, uppdatera, och starta sedan hemskärmsappen igen.
+5. På iPhone: öppna sidan i Safari och uppdatera den.
+6. Stäng hemskärmsappen helt och öppna den igen.
+7. Tryck "Rensa hälsodata".
+8. Tryck "Välj Health JSON".
+9. Välj HealthAutoExport-2026-07-31-2026-08-30.json.
 
-## Innan ny import
-Tryck "Rensa hälsodata" en gång så eventuella gamla poster tas bort.
-
-## Import
-1. Packa upp Health Auto Export ZIP i Filer.
-2. Öppna Health Coach.
-3. Tryck "Välj Health JSON".
-4. Välj den stora JSON-filen.
-5. Vänta på meddelandet "Klart".
-
-All tolkning sker lokalt på iPhone.
+Efter lyckad import ska statusraden visa antal relevanta hälsomått, träningspass och hur många kB som sparades.
